@@ -1,0 +1,108 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:ruminate/models/albumModel.dart';
+import 'package:ruminate/models/data_model.dart';
+import 'package:ruminate/utils/thumbnail_widget.dart';
+
+import 'album_song_page.dart';
+
+class AlbumListPage extends StatefulWidget {
+  AlbumListPage({
+    Key key,
+    @required this.dataBox,
+  }) : super(key: key);
+
+  Box<DataModel> dataBox;
+
+  @override
+  _AlbumListPageState createState() => _AlbumListPageState();
+}
+
+class _AlbumListPageState extends State<AlbumListPage> {
+  List<AlbumModel> album = [];
+  String doc = '';
+
+  @override
+  void initState() {
+    super.initState();
+    getPath();
+  }
+
+  void getPath() async {
+    doc = (await getExternalStorageDirectories())[0].path;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: widget.dataBox.listenable(),
+      builder: (context, Box<DataModel> items, _) {
+        List<DataModel> data = items.values.toList().cast<DataModel>();
+        data.sort((a, b) => a.album.compareTo(b.album));
+        for (DataModel entity in data) {
+          if (album
+              .where((element) => element.albumName == entity.album)
+              .isEmpty) {
+            album.add(AlbumModel(albumName: entity.album, songs: [entity]));
+          } else {
+            int i = album
+                .indexWhere((element) => element.albumName == entity.album);
+            if (album[i].songs.where((element) => element == entity).isEmpty) {
+              album[i].songs.add(entity);
+            }
+          }
+        }
+
+        return Container(
+            child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 0,
+                  mainAxisSpacing: 0,
+                ),
+                itemCount: album.length,
+                itemBuilder: (context, i) {
+                  return Card(
+                    color: Colors.grey[900],
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    AlbumSongsPage(album: album[i])));
+                      },
+                      child: Stack(
+                        children: [
+                          Center(
+                              child: Container(
+                                  child: Thumbnail().imageThumbnail(
+                                      album[i].songs[0].path.hashCode,
+                                      BoxFit.cover))
+                              // child: Image.file(''),
+                              ),
+                          Container(
+                              padding: EdgeInsets.only(bottom: 10),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    colors: [Colors.transparent, Colors.black],
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    stops: [0.5, 0.9]),
+                              ),
+                              alignment: Alignment.bottomCenter,
+                              child: Text(album[i].albumName == ''
+                                  ? '<unknown>'
+                                  : "$i ${album[i].albumName}")),
+                        ],
+                      ),
+                    ),
+                  );
+                }));
+      },
+    );
+  }
+}
