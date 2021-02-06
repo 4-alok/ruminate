@@ -6,7 +6,6 @@ import 'package:ruminate/screens/intro_page/intro.dart';
 import 'models/data_model.dart';
 
 Box settingBox;
-//main
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final doc = await getApplicationDocumentsDirectory();
