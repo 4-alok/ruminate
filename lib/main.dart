@@ -6,7 +6,7 @@ import 'package:ruminate/screens/intro_page/intro.dart';
 import 'models/data_model.dart';
 
 Box settingBox;
-
+//main
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final doc = await getApplicationDocumentsDirectory();
@@ -26,10 +26,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        brightness: Brightness.dark,
-        accentColor: Colors.blue,
-        primaryColor: Colors.black
-        ),
+          brightness: Brightness.dark,
+          accentColor: Colors.blue,
+          primaryColor: Colors.black),
       initialRoute: settingBox.isEmpty ? '/intro' : '/home',
       // home: TestPage(),
       routes: <String, WidgetBuilder>{
@@ -40,4 +39,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
