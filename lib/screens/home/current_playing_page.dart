@@ -58,14 +58,25 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
             },
           ),
           Container(
+            height: MediaQuery.of(context).size.height,
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
               child: Container(
-                color: Colors.black.withOpacity(0),
+                color: Colors.transparent,
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
               ),
             ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * .7,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+              colors: [Colors.transparent, Colors.black.withOpacity(0.4)],
+              stops: [0.8, 1],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            )),
           ),
           mainPlayingPage(context)
         ],
@@ -76,8 +87,10 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
   Container mainPlayingPage(BuildContext context) {
     return Container(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
+            width: 0,
             height: MediaQuery.of(context).size.height * .70,
           ),
           Container(
