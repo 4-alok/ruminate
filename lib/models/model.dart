@@ -13,3 +13,10 @@ class FolderModel {
 
   FolderModel({this.folder, this.songs});
 }
+
+class ArtistModel {
+  String artist;
+  List<DataModel> songs;
+
+  ArtistModel({this.artist, this.songs});
+}

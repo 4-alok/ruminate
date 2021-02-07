@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:ruminate/screens/home/folder_page.dart';
@@ -7,6 +8,7 @@ import 'albumPage.dart';
 import '../../models/data_model.dart';
 import '../../utils/database.dart';
 import '../../utils/audio_service.dart';
+import 'artist_page.dart';
 import 'current_playing_page.dart';
 import 'musicList.dart';
 
@@ -23,7 +25,13 @@ class _HomePageState extends State<HomePage>
   final _panelController = PanelController();
   Box<DataModel> dataBox;
   final ValueNotifier<double> height = ValueNotifier<double>(0);
-
+  final ValueNotifier<int> currentPage = ValueNotifier<int>(0);
+  final title = <Widget>[
+    Container(child: Text("Music")),
+    Container(child: Text("Album")),
+    Container(child: Text("Artist")),
+    Container(child: Text("Folder")),
+  ];
   StreamSubscription<int> _currentIndexStream;
   StreamSubscription<bool> isPlaying;
 
@@ -76,7 +84,12 @@ class _HomePageState extends State<HomePage>
                 maxHeight: MediaQuery.of(context).size.height,
                 body: Scaffold(
                   appBar: AppBar(
-                    title: Text('Music'),
+                    title: ValueListenableBuilder<int>(
+                      valueListenable: currentPage,
+                      builder: (context, snapshot, child) {
+                        return title[snapshot];
+                      },
+                    ),
                     actions: [
                       IconButton(
                         icon: Icon(Icons.refresh),
@@ -100,7 +113,7 @@ class _HomePageState extends State<HomePage>
                             ),
                         duration: Duration(microseconds: 400),
                         child: PageView.builder(
-                          itemCount: 3,
+                          itemCount: 4,
                           itemBuilder: (context, i) {
                             switch (i) {
                               case 0:
@@ -108,12 +121,17 @@ class _HomePageState extends State<HomePage>
                               case 1:
                                 return AlbumListPage(dataBox: dataBox);
                               case 2:
+                                return ArtistPage(dataBox: dataBox);
+                              case 3:
                                 return FolderMusicPage(dataBox: dataBox);
                               default:
                                 return Container(
                                   color: Colors.amber,
                                 );
                             }
+                          },
+                          onPageChanged: (val) {
+                            currentPage.value = val;
                           },
                         ),
                       )

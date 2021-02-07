@@ -15,7 +15,8 @@ class CurrentPlayingPage extends StatefulWidget {
 class _CurrentPlayingPageState extends State<CurrentPlayingPage>
     with SingleTickerProviderStateMixin {
   AnimationController playPauseController2;
-  final currentPlayingPageController = PageController();
+  final currentPlayingPageController =
+      PageController(initialPage: player.currentIndex);
   StreamSubscription<bool> isPlaying;
   StreamSubscription<int> _currentIndexStream;
 
@@ -131,8 +132,34 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
+              width: MediaQuery.of(context).size.height,
+              height: MediaQuery.of(context).size.height * .12,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "• Next Song •",
+                    style: TextStyle(color: Colors.white.withOpacity(.8)),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  StreamBuilder<int>(
+                      stream: player.currentIndexStream,
+                      builder: (context, snapshot) {
+                        return Text(
+                          playlist[snapshot.data + 1].title,
+                          style: Theme.of(context).textTheme.subtitle1,
+                          textAlign: TextAlign.center,
+                        );
+                      }),
+                ],
+              )),
+          Container(
             width: 0,
-            height: MediaQuery.of(context).size.height * .760,
+            height: MediaQuery.of(context).size.height * .640,
           ),
           Container(
             color: Colors.black.withOpacity(.4),
@@ -159,7 +186,10 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
                           overflow: TextOverflow.ellipsis,
                         ),
                         subtitle: Text(
-                          playlist[snapshot.data].artist,
+                          playlist[snapshot.data].artist == ""
+                              ? "<Unknown Artist>"
+                              : playlist[snapshot.data].artist,
+                          style: Theme.of(context).textTheme.overline,
                           textAlign: TextAlign.center,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -171,7 +201,7 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
                       );
                     }),
                 Padding(
-                  padding: EdgeInsets.only(left: 10, right: 10),
+                  padding: EdgeInsets.only(left: 20, right: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
@@ -183,7 +213,7 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
                               ? Container()
                               : Text(
                                   _printDuration(snapshot.data),
-                                  // style: Theme.of(context).textTheme.headline6,
+                                  style: Theme.of(context).textTheme.overline,
                                 );
                         },
                       ),
@@ -194,6 +224,7 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
                               ? Container()
                               : Text(
                                   _printDuration(snapshot.data),
+                                  style: Theme.of(context).textTheme.overline,
                                 );
                         },
                       ),
@@ -316,9 +347,9 @@ class _SeekBarState extends State<SeekBar> {
           trackHeight: 1,
           thumbShape: RoundSliderThumbShape(enabledThumbRadius: 7)),
       child: Container(
-        // color: Colors.green,
         width: MediaQuery.of(context).size.width,
         child: Slider(
+          label: "hello",
           min: 0.0,
           max: widget.duration.inMilliseconds.toDouble(),
           value: min(_dragValue ?? widget.position.inMilliseconds.toDouble(),

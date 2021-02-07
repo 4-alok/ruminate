@@ -42,57 +42,69 @@ class _FolderMusicPageState extends State<FolderMusicPage> {
             }
           }
         }
+        folder.sort((a, b) => a.folder.compareTo(b.folder));
         return ListView.builder(
           itemCount: folder.length,
-          itemBuilder: (_, i) {
+          itemBuilder: (_, index) {
             return Card(
-              child: OpenContainer(
-                openColor: Colors.black,
-                closedColor: Colors.grey[900],
-                transitionDuration: Duration(milliseconds: 400),
-                closedBuilder: (context, action) => ListTile(
-                  title: Text(folder[i].folder),
-                  subtitle: Text(
-                    folder[i].songs.length == 1
-                        ? "1 song"
-                        : "${folder[i].songs.length} songs",
-                  ),
-                  trailing: IconButton(
-                    icon: Icon(Icons.more_vert),
-                    onPressed: () {},
-                  ),
-                  // onTap: () {},
-                ),
-                openBuilder: (context, action) => Scaffold(
-                  backgroundColor: Colors.black,
-                  appBar: AppBar(
-                    title: Text(folder[i].folder),
-                    actions: [
-                      IconButton(icon: Icon(Icons.more_vert), onPressed: () {})
-                    ],
-                  ),
-                  body: ListView.builder(
-                    itemCount: folder[i].songs.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        onTap: () {},
-                        leading: folder[i].songs[index].complete == true
-                            ? CircleAvatar(child: Icon(Icons.music_note))
-                            : CircleAvatar(
-                                child: Thumbnail().imageThumbnail(
-                                    folder[i].songs[index].path.hashCode,
-                                    BoxFit.scaleDown)),
-                        title: Text(folder[i].songs[index].title),
-                        subtitle: Text(folder[i].songs[index].artist),
-                      );
-                    },
-                  ),
-                ),
+              child: OpenContainerWidget(
+                primaryTitle: folder[index].folder,
+                songs: folder[index].songs,
               ),
             );
           },
         );
       },
+    );
+  }
+}
+
+class OpenContainerWidget extends StatelessWidget {
+  const OpenContainerWidget({Key key, this.primaryTitle, this.songs})
+      : super(key: key);
+
+  final String primaryTitle;
+  final List<DataModel> songs;
+
+  @override
+  Widget build(BuildContext context) {
+    return OpenContainer(
+      openColor: Colors.black,
+      closedColor: Colors.grey[900],
+      transitionDuration: Duration(milliseconds: 400),
+      closedBuilder: (context, action) => ListTile(
+        title: Text(primaryTitle),
+        subtitle: Text(
+          songs.length == 1 ? "1 song" : "${songs.length} songs",
+        ),
+        trailing: IconButton(
+          icon: Icon(Icons.more_vert),
+          onPressed: () {},
+        ),
+        // onTap: () {},
+      ),
+      openBuilder: (context, action) => Scaffold(
+        backgroundColor: Colors.black,
+        appBar: AppBar(
+          title: Text(primaryTitle),
+          actions: [IconButton(icon: Icon(Icons.more_vert), onPressed: () {})],
+        ),
+        body: ListView.builder(
+          itemCount: songs.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              onTap: () {},
+              leading: songs[index].complete == true
+                  ? CircleAvatar(child: Icon(Icons.music_note))
+                  : CircleAvatar(
+                      child: Thumbnail().imageThumbnail(
+                          songs[index].path.hashCode, BoxFit.scaleDown)),
+              title: Text(songs[index].title),
+              subtitle: Text(songs[index].artist),
+            );
+          },
+        ),
+      ),
     );
   }
 }
