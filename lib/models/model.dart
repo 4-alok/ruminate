@@ -6,3 +6,10 @@ class AlbumModel {
 
   AlbumModel({this.albumName, this.songs});
 }
+
+class FolderModel {
+  String folder;
+  List<DataModel> songs;
+
+  FolderModel({this.folder, this.songs});
+}

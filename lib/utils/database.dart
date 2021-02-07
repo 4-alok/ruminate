@@ -47,7 +47,7 @@ class MusicDatabase {
 
   addSongToBox(String path) async {
     final Map map = await tagger.readTagsAsMap(path: path);
-
+    
     DataModel data = DataModel(
       path: path,
       title:
@@ -58,6 +58,7 @@ class MusicDatabase {
           : map['album'],
       albumArtist: map['albumArtist'],
       year: map['year'],
+      folder: File(path).parent.path.split('/').last,
       createdAt: await File(path).lastModified(),
       complete: map['title'] == "" ? true : false,
     );

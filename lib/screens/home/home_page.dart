@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:ruminate/screens/home/folder_page.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'albumPage.dart';
 import '../../models/data_model.dart';
@@ -99,13 +100,15 @@ class _HomePageState extends State<HomePage>
                             ),
                         duration: Duration(microseconds: 400),
                         child: PageView.builder(
-                          itemCount: 2,
+                          itemCount: 3,
                           itemBuilder: (context, i) {
                             switch (i) {
                               case 0:
                                 return MusicListPage(dataBox: dataBox);
                               case 1:
                                 return AlbumListPage(dataBox: dataBox);
+                              case 2:
+                                return FolderMusicPage(dataBox: dataBox);
                               default:
                                 return Container(
                                   color: Colors.amber,
@@ -146,7 +149,6 @@ class _HomePageState extends State<HomePage>
                                     return Text('');
                                   }
                                   return Container(
-                                    // color: Colors.green,
                                     width:
                                         MediaQuery.of(context).size.width * .7,
                                     child: Text(

@@ -17,10 +17,11 @@ class DataModelAdapter extends TypeAdapter<DataModel> {
       album: fields[3] as String,
       albumArtist: fields[4] as String,
       year: fields[5] as String,
-      createdAt: fields[6] as DateTime,
-      duration: fields[7] as String,
-      playCount: fields[8] as int,
-      complete: fields[9] as bool,
+      folder: fields[6] as String,
+      createdAt: fields[7] as DateTime,
+      duration: fields[8] as String,
+      playCount: fields[9] as int,
+      complete: fields[10] as bool,
     );
   }
 
@@ -41,12 +42,14 @@ class DataModelAdapter extends TypeAdapter<DataModel> {
       ..writeByte(5)
       ..write(obj.year)
       ..writeByte(6)
-      ..write(obj.createdAt)
+      ..write(obj.folder)
       ..writeByte(7)
-      ..write(obj.duration)
+      ..write(obj.createdAt)
       ..writeByte(8)
-      ..write(obj.playCount)
+      ..write(obj.duration)
       ..writeByte(9)
+      ..write(obj.playCount)
+      ..writeByte(10)
       ..write(obj.complete);
   }
 

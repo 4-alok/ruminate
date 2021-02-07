@@ -16,12 +16,14 @@ class DataModel {
   @HiveField(5)
   final String year;
   @HiveField(6)
-  final DateTime createdAt;
+  final String folder;
   @HiveField(7)
-  final String duration;
+  final DateTime createdAt;
   @HiveField(8)
-  final int playCount;
+  final String duration;
   @HiveField(9)
+  final int playCount;
+  @HiveField(10)
   final bool complete;
 
   DataModel(
@@ -31,6 +33,7 @@ class DataModel {
       this.album,
       this.albumArtist,
       this.year,
+      this.folder,
       this.createdAt,
       this.duration,
       this.playCount,

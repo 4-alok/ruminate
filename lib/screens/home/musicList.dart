@@ -1,4 +1,3 @@
-import 'package:audiotagger/audiotagger.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -16,8 +15,6 @@ class MusicListPage extends StatefulWidget {
 }
 
 class _MusicListPageState extends State<MusicListPage> {
-  final tagger = new Audiotagger();
-
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
@@ -42,10 +39,12 @@ class _MusicListPageState extends State<MusicListPage> {
                           data[i].path.hashCode, BoxFit.scaleDown)),
               title: Text(
                 data[i].title == "" ? data[i].path : data[i].title,
+                overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
               subtitle: Text(
                 data[i].artist == '' ? "<unknown>" : data[i].artist,
+                overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
               trailing: IconButton(

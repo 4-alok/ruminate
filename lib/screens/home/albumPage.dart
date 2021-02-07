@@ -1,9 +1,10 @@
 import 'dart:io';
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:ruminate/models/albumModel.dart';
+import 'package:ruminate/models/model.dart';
 import 'package:ruminate/models/data_model.dart';
 import 'package:ruminate/utils/thumbnail_widget.dart';
 
@@ -67,15 +68,11 @@ class _AlbumListPageState extends State<AlbumListPage> {
                 itemBuilder: (context, i) {
                   return Card(
                     color: Colors.grey[900],
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    AlbumSongsPage(album: album[i])));
-                      },
-                      child: Stack(
+                    child: OpenContainer(
+                      closedColor: Colors.black,
+                      openColor: Colors.black,
+                      transitionDuration: Duration(milliseconds: 400),
+                      closedBuilder: (context, action) => Stack(
                         children: [
                           Center(
                               child: Container(
@@ -94,10 +91,21 @@ class _AlbumListPageState extends State<AlbumListPage> {
                                     stops: [0.5, 0.9]),
                               ),
                               alignment: Alignment.bottomCenter,
-                              child: Text(album[i].albumName == ''
-                                  ? '<unknown>'
-                                  : "$i ${album[i].albumName}")),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 5, right: 5),
+                                child: Text(
+                                  album[i].albumName == ''
+                                      ? '<unknown>'
+                                      : "${album[i].albumName}",
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              )),
                         ],
+                      ),
+                      openBuilder: (context, action) => AlbumSongsPage(
+                        album: album[i],
                       ),
                     ),
                   );
