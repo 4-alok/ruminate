@@ -15,8 +15,9 @@ class CurrentPlayingPage extends StatefulWidget {
 class _CurrentPlayingPageState extends State<CurrentPlayingPage>
     with SingleTickerProviderStateMixin {
   AnimationController playPauseController2;
-
+  final currentPlayingPageController = PageController();
   StreamSubscription<bool> isPlaying;
+  StreamSubscription<int> _currentIndexStream;
 
   @override
   void initState() {
@@ -30,11 +31,17 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
     isPlaying = player.playingStream.listen((playing) {
       playing ? playPauseController2.forward() : playPauseController2.reverse();
     });
+
+    _currentIndexStream = player.currentIndexStream.listen((event) {
+      currentPlayingPageController.animateToPage(event,
+          duration: Duration(milliseconds: 400), curve: Curves.decelerate);
+    });
   }
 
   @override
   void dispose() {
     isPlaying.cancel();
+    _currentIndexStream.cancel();
     super.dispose();
   }
 
@@ -43,40 +50,74 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
     return Container(
       child: Stack(
         children: [
-          StreamBuilder(
-            stream: player.currentIndexStream,
-            builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-              if (!snapshot.hasData) {
-                return Container();
-              }
-              return Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: Thumbnail().imageThumbnail(
-                    playlist[snapshot.data].path.hashCode, BoxFit.cover),
-              );
-            },
-          ),
           Container(
-            height: MediaQuery.of(context).size.height,
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-              child: Container(
-                color: Colors.transparent,
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-              ),
+            child: PageView.builder(
+              onPageChanged: (val) async {
+                if (val == player.currentIndex + 1) {
+                  await player.seekToNext();
+                } else if (val == player.currentIndex - 1) {
+                  await player.seekToPrevious();
+                }
+              },
+              controller: currentPlayingPageController,
+              itemCount: playlist.length,
+              itemBuilder: (context, index) {
+                return Stack(
+                  children: [
+                    Container(
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                      child: FutureBuilder(
+                        future: Thumbnail()
+                            .getLocalFile(playlist[index].path.hashCode),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return Container(
+                              color: Colors.black,
+                              child: Center(
+                                child: Icon(
+                                  Icons.music_note,
+                                  size: 500,
+                                ),
+                              ),
+                            );
+                          } else {
+                            return Image.file(
+                              snapshot.data,
+                              fit: BoxFit.cover,
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height,
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                        child: Container(
+                          color: Colors.transparent,
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height * .760,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withOpacity(0.4)
+                        ],
+                        stops: [0.8, 1],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      )),
+                    ),
+                  ],
+                );
+              },
             ),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * .7,
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-              colors: [Colors.transparent, Colors.black.withOpacity(0.4)],
-              stops: [0.8, 1],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            )),
           ),
           mainPlayingPage(context)
         ],
@@ -91,27 +132,51 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
         children: [
           Container(
             width: 0,
-            height: MediaQuery.of(context).size.height * .70,
+            height: MediaQuery.of(context).size.height * .760,
           ),
           Container(
             color: Colors.black.withOpacity(.4),
+            // color: Colors.green,
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * .30,
+            height: MediaQuery.of(context).size.height * .240,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(
-                  height: 20,
-                ),
+                StreamBuilder<int>(
+                    stream: player.currentIndexStream,
+                    builder: (context, snapshot) {
+                      return ListTile(
+                        leading: IconButton(
+                          icon: Icon(Icons.favorite_outline),
+                          onPressed: () {},
+                        ),
+                        title: Text(
+                          playlist[snapshot.data].title,
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        subtitle: Text(
+                          playlist[snapshot.data].artist,
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        trailing: IconButton(
+                          icon: Icon(Icons.more_vert),
+                          onPressed: () {},
+                        ),
+                      );
+                    }),
                 Padding(
                   padding: EdgeInsets.only(left: 10, right: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      StreamBuilder(
+                      StreamBuilder<Duration>(
                         stream: player.positionStream,
                         builder: (context, snapshot) {
                           return !snapshot.hasData
@@ -122,7 +187,7 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
                                 );
                         },
                       ),
-                      StreamBuilder(
+                      StreamBuilder<Duration>(
                         stream: player.durationStream,
                         builder: (context, snapshot) {
                           return !snapshot.hasData
@@ -163,7 +228,13 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
                       IconButton(icon: Icon(Icons.loop), onPressed: () {}),
                       IconButton(
                           icon: Icon(Icons.arrow_back_ios),
-                          onPressed: () => player.seekToPrevious()),
+                          onPressed: () async {
+                            // _currentPlayingPageController.animateToPage(
+                            //     player.currentIndex - 1,
+                            //     duration: Duration(milliseconds: 400),
+                            //     curve: Curves.easeInOut);
+                            await player.seekToPrevious();
+                          }),
                       SizedBox.fromSize(
                         size: Size(56, 56), // button width and height
                         child: ClipOval(
@@ -191,7 +262,13 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
                       ),
                       IconButton(
                           icon: Icon(Icons.arrow_forward_ios),
-                          onPressed: () => player.seekToNext()),
+                          onPressed: () async {
+                            // _currentPlayingPageController.animateToPage(
+                            //     player.currentIndex + 1,
+                            //     duration: Duration(milliseconds: 400),
+                            //     curve: Curves.easeInOut);
+                            return player.seekToNext();
+                          }),
                       IconButton(icon: Icon(Icons.shuffle), onPressed: () {}),
                     ])
               ],

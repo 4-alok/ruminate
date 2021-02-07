@@ -19,9 +19,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   AnimationController playPauseController;
+  final _panelController = PanelController();
   Box<DataModel> dataBox;
-  double height = 55;
+  final ValueNotifier<double> height = ValueNotifier<double>(0);
 
+  StreamSubscription<int> _currentIndexStream;
   StreamSubscription<bool> isPlaying;
 
   @override
@@ -40,6 +42,13 @@ class _HomePageState extends State<HomePage>
     isPlaying = player.playingStream.listen((playing) {
       playing ? playPauseController.forward() : playPauseController.reverse();
     });
+
+    _currentIndexStream = player.currentIndexStream.listen((index) {
+      if (index == null || index == -1) {
+        height.value = 0;
+      } else
+        height.value = 55;
+    });
   }
 
   @override
@@ -48,6 +57,7 @@ class _HomePageState extends State<HomePage>
     dataBox.close();
     Hive.close();
     isPlaying.cancel();
+    _currentIndexStream.cancel();
     disposeAudio();
   }
 
@@ -55,100 +65,129 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: Text('Music'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.refresh),
-            onPressed: () => MusicDatabase().getAudio(),
-          ),
-          IconButton(
-            icon: Icon(Icons.functions),
-            onPressed: () {
-              print('--------------------> Here');
-            },
-          )
-        ],
-      ),
-      body: SlidingUpPanel(
-          parallaxEnabled: true,
-          minHeight: height,
-          maxHeight: MediaQuery.of(context).size.height,
-          body: Stack(
-            children: [
-              Container(
-                padding: EdgeInsets.only(
-                    bottom: height +
-                        MediaQuery.of(context).padding.top +
-                        MediaQuery.of(context).padding.bottom +
-                        AppBar().preferredSize.height),
-                child: PageView.builder(
-                  itemCount: 2,
-                  itemBuilder: (context, i) {
-                    switch (i) {
-                      case 0:
-                        return MusicListPage(dataBox: dataBox);
-                      case 1:
-                        return AlbumListPage(dataBox: dataBox);
-                      default:
-                        return Container(
-                          color: Colors.amber,
-                        );
-                    }
-                  },
-                ),
-              )
-            ],
-          ),
-          collapsed: Container(
-            color: Colors.black,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                MiniSeekBar(),
-                Container(
-                  height: 40,
-                  margin: EdgeInsets.only(left: 20, right: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Text("data"),
-                      StreamBuilder(
-                        stream: player.currentIndexStream,
-                        builder: (BuildContext context,
-                            AsyncSnapshot<int> snapshot) {
-                          if (snapshot.hasData) {
-                            if (snapshot.data == -1) {
-                              return Text('');
-                            }
-                            return Container(
-                              // color: Colors.green,
-                              width: MediaQuery.of(context).size.width * .75,
-                              child: Text(
-                                playlist[snapshot.data].title,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            );
-                          } else {
-                            return Text('');
-                          }
-                        },
+      body: ValueListenableBuilder<double>(
+          valueListenable: height,
+          builder: (context, snapshot, child) {
+            return SlidingUpPanel(
+                controller: _panelController,
+                parallaxEnabled: true,
+                minHeight: snapshot,
+                maxHeight: MediaQuery.of(context).size.height,
+                body: Scaffold(
+                  appBar: AppBar(
+                    title: Text('Music'),
+                    actions: [
+                      IconButton(
+                        icon: Icon(Icons.refresh),
+                        onPressed: () => MusicDatabase().getAudio(),
                       ),
                       IconButton(
-                          icon: AnimatedIcon(
-                            icon: AnimatedIcons.play_pause,
-                            progress: playPauseController,
-                            size: 30,
-                          ),
-                          onPressed: () => floatingButton())
+                        icon: Icon(Icons.functions),
+                        onPressed: () {},
+                      )
+                    ],
+                  ),
+                  backgroundColor: Colors.black,
+                  body: Stack(
+                    children: [
+                      AnimatedContainer(
+                        padding: EdgeInsets.only(
+                            bottom: snapshot +
+                                //  MediaQuery.of(context).padding.top
+                                MediaQuery.of(context).padding.bottom
+                            // AppBar().preferredSize.height
+                            ),
+                        duration: Duration(microseconds: 400),
+                        child: PageView.builder(
+                          itemCount: 2,
+                          itemBuilder: (context, i) {
+                            switch (i) {
+                              case 0:
+                                return MusicListPage(dataBox: dataBox);
+                              case 1:
+                                return AlbumListPage(dataBox: dataBox);
+                              default:
+                                return Container(
+                                  color: Colors.amber,
+                                );
+                            }
+                          },
+                        ),
+                      )
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-          panel: CurrentPlayingPage()),
+                collapsed: Container(
+                  color: Colors.black,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      MiniSeekBar(),
+                      Container(
+                        height: 40,
+                        margin: EdgeInsets.only(left: 10, right: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            RotatedBox(
+                              quarterTurns: 3,
+                              child: IconButton(
+                                  icon: Icon(Icons.arrow_forward_ios),
+                                  onPressed: () {
+                                    _panelController.open();
+                                  }),
+                            ),
+                            StreamBuilder<int>(
+                              stream: player.currentIndexStream,
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<int> snapshot) {
+                                if (snapshot.hasData) {
+                                  if (snapshot.data == -1) {
+                                    return Text('');
+                                  }
+                                  return Container(
+                                    // color: Colors.green,
+                                    width:
+                                        MediaQuery.of(context).size.width * .7,
+                                    child: Text(
+                                      playlist[snapshot.data].title,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  );
+                                } else {
+                                  return Text('');
+                                }
+                              },
+                            ),
+                            IconButton(
+                                icon: AnimatedIcon(
+                                  icon: AnimatedIcons.play_pause,
+                                  progress: playPauseController,
+                                  size: 30,
+                                ),
+                                onPressed: () => floatingButton())
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                panel: StreamBuilder<int>(
+                    stream: player.currentIndexStream,
+                    builder: (context, snapshot) {
+                      if ((!snapshot.hasData) || (snapshot.data == -1)) {
+                        // _panelController.hide();
+                        return Container(
+                          color: Colors.black,
+                        );
+                      } else {
+                        // _panelController.show();
+                        return CurrentPlayingPage();
+                      }
+                    }));
+          }),
     );
   }
 
@@ -192,7 +231,9 @@ class MiniSeekBar extends StatelessWidget {
                   width: MediaQuery.of(context).size.width * pos,
                 );
               } else {
-                return Container();
+                return Container(
+                  color: Colors.black,
+                );
               }
             },
           );
