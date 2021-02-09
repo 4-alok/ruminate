@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:ruminate/models/model.dart';
 import 'package:ruminate/models/data_model.dart';
+import 'package:ruminate/screens/widget/scroll_bar_controller.dart';
 import 'package:ruminate/utils/thumbnail_widget.dart';
 
 import 'album_song_page.dart';
@@ -25,6 +26,7 @@ class AlbumListPage extends StatefulWidget {
 class _AlbumListPageState extends State<AlbumListPage> {
   List<AlbumModel> album = [];
   String doc = '';
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -58,58 +60,63 @@ class _AlbumListPageState extends State<AlbumListPage> {
         }
 
         return Container(
-            child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 0,
-                  mainAxisSpacing: 0,
-                ),
-                itemCount: album.length,
-                itemBuilder: (context, i) {
-                  return Card(
-                    color: Colors.grey[900],
-                    child: OpenContainer(
-                      closedColor: Colors.black,
-                      openColor: Colors.black,
-                      transitionDuration: Duration(milliseconds: 400),
-                      closedBuilder: (context, action) => Stack(
-                        children: [
-                          Center(
-                              child: Container(
-                                  child: Thumbnail().imageThumbnail(
-                                      album[i].songs[0].path.hashCode,
-                                      BoxFit.cover))
-                              // child: Image.file(''),
-                              ),
-                          Container(
-                              padding: EdgeInsets.only(bottom: 10),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                    colors: [Colors.transparent, Colors.black],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    stops: [0.5, 0.9]),
-                              ),
-                              alignment: Alignment.bottomCenter,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 5, right: 5),
-                                child: Text(
-                                  album[i].albumName == ''
-                                      ? '<unknown>'
-                                      : "${album[i].albumName}",
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
+            child: ScrollBarControl(
+              controller: _scrollController,
+                          child: GridView.builder(
+                controller: _scrollController,
+                physics: BouncingScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 0,
+                    mainAxisSpacing: 0,
+                  ),
+                  itemCount: album.length,
+                  itemBuilder: (context, i) {
+                    return Card(
+                      color: Colors.grey[900],
+                      child: OpenContainer(
+                        closedColor: Colors.black,
+                        openColor: Colors.black,
+                        transitionDuration: Duration(milliseconds: 400),
+                        closedBuilder: (context, action) => Stack(
+                          children: [
+                            Center(
+                                child: Container(
+                                    child: Thumbnail().imageThumbnail(
+                                        album[i].songs[0].path.hashCode,
+                                        BoxFit.cover))
+                                // child: Image.file(''),
                                 ),
-                              )),
-                        ],
+                            Container(
+                                padding: EdgeInsets.only(bottom: 10),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      colors: [Colors.transparent, Colors.black],
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      stops: [0.5, 0.9]),
+                                ),
+                                alignment: Alignment.bottomCenter,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 5, right: 5),
+                                  child: Text(
+                                    album[i].albumName == ''
+                                        ? '<unknown>'
+                                        : "${album[i].albumName}",
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                )),
+                          ],
+                        ),
+                        openBuilder: (context, action) => AlbumSongsPage(
+                          album: album[i],
+                        ),
                       ),
-                      openBuilder: (context, action) => AlbumSongsPage(
-                        album: album[i],
-                      ),
-                    ),
-                  );
-                }));
+                    );
+                  }),
+            ));
       },
     );
   }

@@ -260,10 +260,6 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
                       IconButton(
                           icon: Icon(Icons.arrow_back_ios),
                           onPressed: () async {
-                            // _currentPlayingPageController.animateToPage(
-                            //     player.currentIndex - 1,
-                            //     duration: Duration(milliseconds: 400),
-                            //     curve: Curves.easeInOut);
                             await player.seekToPrevious();
                           }),
                       SizedBox.fromSize(
@@ -294,10 +290,6 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
                       IconButton(
                           icon: Icon(Icons.arrow_forward_ios),
                           onPressed: () async {
-                            // _currentPlayingPageController.animateToPage(
-                            //     player.currentIndex + 1,
-                            //     duration: Duration(milliseconds: 400),
-                            //     curve: Curves.easeInOut);
                             return player.seekToNext();
                           }),
                       IconButton(icon: Icon(Icons.shuffle), onPressed: () {}),

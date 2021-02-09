@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:ruminate/screens/home/folder_page.dart';
