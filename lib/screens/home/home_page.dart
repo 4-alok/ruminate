@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:ruminate/main.dart';
 import 'package:ruminate/screens/home/folder_page.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'albumPage.dart';
@@ -40,7 +41,6 @@ class _HomePageState extends State<HomePage>
 
     initAudio();
     dataBox = Hive.box<DataModel>('data');
-
     playPauseController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 400),
@@ -96,7 +96,10 @@ class _HomePageState extends State<HomePage>
                       ),
                       IconButton(
                         icon: Icon(Icons.functions),
-                        onPressed: () {},
+                        onPressed: () async {
+                          var k = player.sequence;
+                          print(k[1]);
+                        },
                       )
                     ],
                   ),

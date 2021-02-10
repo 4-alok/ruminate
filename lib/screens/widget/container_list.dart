@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:ruminate/models/data_model.dart';
+import 'package:ruminate/utils/audio_service.dart';
 import 'package:ruminate/utils/thumbnail_widget.dart';
 
 class OpenContainerWidget extends StatelessWidget {
@@ -38,7 +39,9 @@ class OpenContainerWidget extends StatelessWidget {
           itemCount: songs.length,
           itemBuilder: (context, index) {
             return ListTile(
-              onTap: () {},
+              onTap: () {
+                initPlayList(songs,index);
+              },
               leading: songs[index].complete == true
                   ? CircleAvatar(child: Icon(Icons.music_note))
                   : CircleAvatar(

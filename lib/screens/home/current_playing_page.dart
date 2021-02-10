@@ -1,7 +1,9 @@
-import 'dart:async';
-import 'dart:math';
 import 'dart:ui';
+import 'dart:math';
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:ruminate/utils/audio_service.dart';
 import 'package:ruminate/utils/thumbnail_widget.dart';
 
@@ -34,8 +36,10 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
     });
 
     _currentIndexStream = player.currentIndexStream.listen((event) {
-      currentPlayingPageController.animateToPage(event,
-          duration: Duration(milliseconds: 400), curve: Curves.decelerate);
+      player.shuffleModeEnabled
+          ? currentPlayingPageController.jumpToPage(event)
+          : currentPlayingPageController.animateToPage(event,
+              duration: Duration(milliseconds: 400), curve: Curves.decelerate);
     });
   }
 
@@ -69,8 +73,8 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
                       height: MediaQuery.of(context).size.height,
                       width: MediaQuery.of(context).size.width,
                       child: FutureBuilder(
-                        future: Thumbnail()
-                            .getLocalFile(playlist[index].path.hashCode),
+                        future:
+                            Thumbnail().getThumb(playlist[index].path.hashCode),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) {
                             return Container(
@@ -83,7 +87,7 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
                               ),
                             );
                           } else {
-                            return Image.file(
+                            return Image.memory(
                               snapshot.data,
                               fit: BoxFit.cover,
                             );
@@ -131,32 +135,36 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-              width: MediaQuery.of(context).size.height,
-              height: MediaQuery.of(context).size.height * .12,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "• Next Song •",
-                    style: TextStyle(color: Colors.white.withOpacity(.8)),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  StreamBuilder<int>(
-                      stream: player.currentIndexStream,
-                      builder: (context, snapshot) {
-                        return Text(
-                          playlist[snapshot.data + 1].title,
+          StreamBuilder<int>(
+              stream: player.currentIndexStream,
+              builder: (context, snapshot) {
+                return Container(
+                    width: MediaQuery.of(context).size.height,
+                    height: MediaQuery.of(context).size.height * .12,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          playlist[snapshot.data + 1].title == null
+                              ? ""
+                              : "• Next Song •",
+                          style: TextStyle(color: Colors.white.withOpacity(.8)),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          playlist[snapshot.data + 1].title == null
+                              ? ""
+                              : playlist[snapshot.data + 1].title,
                           style: Theme.of(context).textTheme.subtitle1,
                           textAlign: TextAlign.center,
-                        );
-                      }),
-                ],
-              )),
+                        )
+                      ],
+                    ));
+              }),
           Container(
             width: 0,
             height: MediaQuery.of(context).size.height * .640,
@@ -256,7 +264,32 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      IconButton(icon: Icon(Icons.loop), onPressed: () {}),
+                      IconButton(
+                          icon: StreamBuilder<LoopMode>(
+                              stream: player.loopModeStream,
+                              builder: (context, snapshot) {
+                                if (snapshot.data == LoopMode.off) {
+                                  return Icon(
+                                    Icons.loop,
+                                    color: Colors.grey,
+                                  );
+                                } else if (snapshot.data == LoopMode.all) {
+                                  return Icon(
+                                    Icons.loop,
+                                    color: Colors.white,
+                                  );
+                                }
+                                return Icon(Icons.repeat_one);
+                              }),
+                          onPressed: () {
+                            if (player.loopMode == LoopMode.off) {
+                              player.setLoopMode(LoopMode.all);
+                            } else if (player.loopMode == LoopMode.all) {
+                              player.setLoopMode(LoopMode.one);
+                            } else {
+                              player.setLoopMode(LoopMode.off);
+                            }
+                          }),
                       IconButton(
                           icon: Icon(Icons.arrow_back_ios),
                           onPressed: () async {
@@ -292,7 +325,22 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
                           onPressed: () async {
                             return player.seekToNext();
                           }),
-                      IconButton(icon: Icon(Icons.shuffle), onPressed: () {}),
+                      IconButton(
+                          icon: StreamBuilder<bool>(
+                              stream: player.shuffleModeEnabledStream,
+                              builder: (context, snapshot) {
+                                return Icon(
+                                  Icons.shuffle,
+                                  color: snapshot.data
+                                      ? Colors.white
+                                      : Colors.grey,
+                                );
+                              }),
+                          onPressed: () {
+                            !player.shuffleModeEnabled
+                                ? player.setShuffleModeEnabled(true)
+                                : player.setShuffleModeEnabled(false);
+                          })
                     ])
               ],
             ),

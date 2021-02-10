@@ -1,18 +1,16 @@
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+
+import '../main.dart';
 
 class Thumbnail {
   FutureBuilder imageThumbnail(int id, BoxFit boxFit) {
     return FutureBuilder(
-        future: getLocalFile(id),
+        future: getThumb(id),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.waiting) {
             if (snapshot.data != null) {
-              return Image.file(
-                snapshot.data,
-                fit: boxFit,
-              );
+              return Hero(tag: "hero",child: Image.memory(snapshot.data));
             } else {
               return Center(
                 child: Icon(Icons.music_note),
@@ -26,14 +24,7 @@ class Thumbnail {
         });
   }
 
-  Future<File> getLocalFile(int id) async {
-    var doc = (await getExternalStorageDirectories())[0].path;
-
-    File file = File("$doc/$id");
-    if (await file.exists()) {
-      return file;
-    } else {
-      return null;
-    }
+  Future<Uint8List> getThumb(int id) async {
+    return (await thumb.get(id));
   }
 }

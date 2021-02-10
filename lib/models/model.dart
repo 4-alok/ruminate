@@ -20,3 +20,8 @@ class ArtistModel {
 
   ArtistModel({this.artist, this.songs});
 }
+
+class AudioMetadata {
+  String path;
+  AudioMetadata({this.path});
+}

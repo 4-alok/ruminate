@@ -6,14 +6,15 @@ import 'package:ruminate/screens/intro_page/intro.dart';
 import 'models/data_model.dart';
 
 Box settingBox;
+LazyBox thumb;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final doc = await getApplicationDocumentsDirectory();
   Hive.init(doc.path);
   Hive.registerAdapter(DataModelAdapter());
-  await Hive.openBox("setting");
-  settingBox = Hive.box("setting");
+  settingBox = await Hive.openBox("setting");
   await Hive.openBox<DataModel>("data");
+  thumb = await Hive.openLazyBox('thumbnail');
   runApp(MyApp());
 }
 

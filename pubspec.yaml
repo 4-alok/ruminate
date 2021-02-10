@@ -22,12 +22,13 @@ environment:
 
 dependencies:
   permission_handler: ^5.0.1+1 
-  hive_flutter:
   audiotagger: ^1.1.0
   just_audio: ^0.6.9
   animations: ^1.1.2
+  image: ^2.1.19
   path_provider:
-  hive:
+  hive_flutter: ^0.3.1
+  hive: ^1.4.4+1
   sliding_up_panel: ^1.0.2
   flutter:
     sdk: flutter
@@ -38,8 +39,8 @@ dependencies:
   cupertino_icons: ^1.0.0
 
 dev_dependencies:
-  hive_generator:
-  build_runner:
+  hive_generator: ^0.8.2
+  build_runner: ^1.11.1
   flutter_test:
     sdk: flutter
 

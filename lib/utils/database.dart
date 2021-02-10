@@ -4,6 +4,8 @@ import 'package:audiotagger/audiotagger.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:ruminate/models/data_model.dart';
+import 'package:image/image.dart';
+import '../main.dart';
 
 class MusicDatabase {
   Box<DataModel> dataBox = Hive.box<DataModel>("data");
@@ -18,17 +20,20 @@ class MusicDatabase {
 
   void getFiles(Directory dir) async {
     try {
-      for (FileSystemEntity entity in (dir.listSync(recursive: false, followLinks: false))) {
+      for (FileSystemEntity entity
+          in (dir.listSync(recursive: false, followLinks: false))) {
         if (entity is File) {
           if (entity.path.endsWith('.mp3')) {
             if (dataBox.isEmpty) {
-              await generateThumbnail(entity.path);
+              await generateHThumbnail(entity.path);
+              // await generateThumbnail(entity.path);
               addSongToBox(entity.path);
             } else {
               if (dataBox.values
                   .where((element) => element.path == entity.path)
                   .isEmpty) {
-                await generateThumbnail(entity.path);
+                await generateHThumbnail(entity.path);
+                // await generateThumbnail(entity.path);
                 addSongToBox(entity.path);
               }
             }
@@ -47,7 +52,7 @@ class MusicDatabase {
 
   addSongToBox(String path) async {
     final Map map = await tagger.readTagsAsMap(path: path);
-    
+
     DataModel data = DataModel(
       path: path,
       title:
@@ -73,16 +78,12 @@ class MusicDatabase {
     }
   }
 
-  generateThumbnail(String path) async {
-    final doc = (await getExternalStorageDirectories())[0].path;
-    final file = File(doc + '/${path.hashCode}');
-    if (!(await file.exists())) {
-      try {
-        final Uint8List bytes = await tagger.readArtwork(path: path);
-        if (bytes != null) {
-          file.writeAsBytes(bytes);
-        }
-      } catch (e) {}
+  generateHThumbnail(String path) async {
+    final Uint8List bytes = await tagger.readArtwork(path: path);
+    if (bytes != null) {
+      Image image = decodeImage(bytes);
+      Image thumbS = copyResize(image, width: 300);
+      await thumb.put(path.hashCode, encodePng(thumbS));
     }
   }
 }

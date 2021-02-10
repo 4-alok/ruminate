@@ -44,7 +44,9 @@ class _MusicListPageState extends State<MusicListPage> {
                         child: Thumbnail().imageThumbnail(
                             data[i].path.hashCode, BoxFit.cover)),
                 title: Text(
-                  data[i].title == "" ? data[i].path : data[i].title,
+                  data[i].title == ""
+                      ? "$i " + data[i].path
+                      : "$i " + data[i].title,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),

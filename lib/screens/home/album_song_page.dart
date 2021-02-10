@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ruminate/models/model.dart';
+import 'package:ruminate/utils/audio_service.dart';
 import 'package:ruminate/utils/thumbnail_widget.dart';
 
 class AlbumSongsPage extends StatefulWidget {
@@ -44,6 +45,9 @@ class _AlbumSongsPageState extends State<AlbumSongsPage> {
                 "\n" +
                 "Album: " +
                 widget.album.songs[index].album),
+                onTap: (){
+                  initPlayList(widget.album.songs, index);
+                },
           ),
         );
       }, childCount: widget.album.songs.length)),
@@ -52,3 +56,6 @@ class _AlbumSongsPageState extends State<AlbumSongsPage> {
     );
   }
 }
+
+// dr lalit kishore
+// niket chaudhri
