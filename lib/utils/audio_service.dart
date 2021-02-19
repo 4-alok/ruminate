@@ -5,19 +5,17 @@ import 'package:ruminate/models/model.dart';
 
 AudioPlayer player;
 
-List<DataModel> playlist;
-
 initPlayList(List<DataModel> songs, int i) async {
-  playlist = [];
-  playlist = songs;
   await player.setAudioSource(
     ConcatenatingAudioSource(
         useLazyPreparation: true,
-        // shuffleOrder: DefaultShuffleOrder(),
-        children: playlist
-            .map((e) => AudioSource.uri(Uri.file(e.path, windows: true),tag: AudioMetadata(
-              path: e.path
-            )))
+        children: songs
+            .map((e) => AudioSource.uri(Uri.file(e.path, windows: true),
+                tag: AudioMetadata(
+                  path: e.path,
+                  title: e.title,
+                  artist: e.artist,
+                )))
             .toList()),
     initialIndex: i,
     initialPosition: Duration.zero,
@@ -34,9 +32,4 @@ initAudio() async {
 disposeAudio() {
   player.stop();
   player.dispose();
-}
-
-playAudio(String path) async {
-  await player.setFilePath(path);
-  player.play();
 }

@@ -56,73 +56,79 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
       child: Stack(
         children: [
           Container(
-            child: PageView.builder(
-              onPageChanged: (val) async {
-                if (val == player.currentIndex + 1) {
-                  await player.seekToNext();
-                } else if (val == player.currentIndex - 1) {
-                  await player.seekToPrevious();
-                }
-              },
-              controller: currentPlayingPageController,
-              itemCount: playlist.length,
-              itemBuilder: (context, index) {
-                return Stack(
-                  children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height,
-                      width: MediaQuery.of(context).size.width,
-                      child: FutureBuilder(
-                        future:
-                            Thumbnail().getThumb(playlist[index].path.hashCode),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return Container(
-                              color: Colors.black,
-                              child: Center(
-                                child: Icon(
-                                  Icons.music_note,
-                                  size: 500,
-                                ),
+            child: StreamBuilder<List<IndexedAudioSource>>(
+                stream: player.sequenceStream,
+                builder: (context, snapshot) {
+                  return PageView.builder(
+                    onPageChanged: (val) async {
+                      if (val == player.currentIndex + 1) {
+                        await player.seekToNext();
+                      } else if (val == player.currentIndex - 1) {
+                        await player.seekToPrevious();
+                      }
+                    },
+                    controller: currentPlayingPageController,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      return Stack(
+                        children: [
+                          Container(
+                            height: MediaQuery.of(context).size.height,
+                            width: MediaQuery.of(context).size.width,
+                            child: FutureBuilder(
+                              future:
+                                  // Thumbnail().getThumb(playlist[index].path.hashCode),
+                                  Thumbnail().getThumb(
+                                      snapshot.data[index].tag.path.hashCode),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Container(
+                                    color: Colors.black,
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.music_note,
+                                        size: 500,
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  return Image.memory(
+                                    snapshot.data,
+                                    fit: BoxFit.cover,
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height,
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                              child: Container(
+                                color: Colors.transparent,
+                                height: MediaQuery.of(context).size.height,
+                                width: MediaQuery.of(context).size.width,
                               ),
-                            );
-                          } else {
-                            return Image.memory(
-                              snapshot.data,
-                              fit: BoxFit.cover,
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.height,
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                        child: Container(
-                          color: Colors.transparent,
-                          height: MediaQuery.of(context).size.height,
-                          width: MediaQuery.of(context).size.width,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.height * .760,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                        colors: [
-                          Colors.transparent,
-                          Colors.black.withOpacity(0.4)
+                            ),
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * .760,
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                              colors: [
+                                Colors.transparent,
+                                Colors.black.withOpacity(0.4)
+                              ],
+                              stops: [0.8, 1],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            )),
+                          ),
                         ],
-                        stops: [0.8, 1],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      )),
-                    ),
-                  ],
-                );
-              },
-            ),
+                      );
+                    },
+                  );
+                }),
           ),
           mainPlayingPage(context)
         ],
@@ -147,7 +153,8 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          playlist[snapshot.data + 1].title == null
+                          // playlist[snapshot.data + 1].title == null
+                          player.sequence[snapshot.data + 1].tag.title == null
                               ? ""
                               : "• Next Song •",
                           style: TextStyle(color: Colors.white.withOpacity(.8)),
@@ -156,9 +163,9 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
                           height: 5,
                         ),
                         Text(
-                          playlist[snapshot.data + 1].title == null
+                          player.sequence[snapshot.data + 1].tag.title == null
                               ? ""
-                              : playlist[snapshot.data + 1].title,
+                              : player.sequence[snapshot.data + 1].tag.title,
                           style: Theme.of(context).textTheme.subtitle1,
                           textAlign: TextAlign.center,
                         )
@@ -188,15 +195,15 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
                           onPressed: () {},
                         ),
                         title: Text(
-                          playlist[snapshot.data].title,
+                          player.sequence[snapshot.data].tag.title,
                           textAlign: TextAlign.center,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                         subtitle: Text(
-                          playlist[snapshot.data].artist == ""
+                          player.sequence[snapshot.data].tag.artist == ""
                               ? "<Unknown Artist>"
-                              : playlist[snapshot.data].artist,
+                              : player.sequence[snapshot.data].tag.artist,
                           style: Theme.of(context).textTheme.overline,
                           textAlign: TextAlign.center,
                           maxLines: 1,
@@ -389,7 +396,6 @@ class _SeekBarState extends State<SeekBar> {
       child: Container(
         width: MediaQuery.of(context).size.width,
         child: Slider(
-          label: "hello",
           min: 0.0,
           max: widget.duration.inMilliseconds.toDouble(),
           value: min(_dragValue ?? widget.position.inMilliseconds.toDouble(),

@@ -23,5 +23,8 @@ class ArtistModel {
 
 class AudioMetadata {
   String path;
-  AudioMetadata({this.path});
+  String title;
+  String artist;
+
+  AudioMetadata({this.path, this.title, this.artist});
 }

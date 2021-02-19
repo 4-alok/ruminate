@@ -1,16 +1,17 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:ruminate/main.dart';
-import 'package:ruminate/screens/home/folder_page.dart';
+import 'package:flutter/material.dart';
+import 'package:ruminate/utils/database.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'albumPage.dart';
+import '../../main.dart';
 import '../../models/data_model.dart';
-import '../../utils/database.dart';
 import '../../utils/audio_service.dart';
+import '../../utils/notification_service.dart';
+import 'albumPage.dart';
+import 'musicList.dart';
+import 'folder_page.dart';
 import 'artist_page.dart';
 import 'current_playing_page.dart';
-import 'musicList.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -26,11 +27,17 @@ class _HomePageState extends State<HomePage>
   Box<DataModel> dataBox;
   final ValueNotifier<double> height = ValueNotifier<double>(0);
   final ValueNotifier<int> currentPage = ValueNotifier<int>(0);
-  final title = <Widget>[
-    Container(child: Text("Music")),
-    Container(child: Text("Album")),
-    Container(child: Text("Artist")),
-    Container(child: Text("Folder")),
+  final title = [
+    "Music",
+    "Album",
+    "Artist",
+    "Folder",
+  ];
+  List<Widget> appbar = [
+    ListTile(title: Text('Music')),
+    ListTile(title: Text('Album')),
+    ListTile(title: Text('Artist')),
+    ListTile(title: Text('Folder')),
   ];
   StreamSubscription<int> _currentIndexStream;
   StreamSubscription<bool> isPlaying;
@@ -38,7 +45,7 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-
+    MusicDatabase().getAudio();
     initAudio();
     dataBox = Hive.box<DataModel>('data');
     playPauseController = AnimationController(
@@ -49,23 +56,30 @@ class _HomePageState extends State<HomePage>
 
     isPlaying = player.playingStream.listen((playing) {
       playing ? playPauseController.forward() : playPauseController.reverse();
+      if ((player.currentIndex != null) || (player.currentIndex != -1)) {
+        NotificationServices().isPlaying(playing);
+      }
     });
 
     _currentIndexStream = player.currentIndexStream.listen((index) {
-      if (index == null || index == -1) {
-        height.value = 0;
-      } else
-        height.value = 55;
+      (index == null || index == -1) ? height.value = 0 : hasIndex(index);
     });
+  }
+
+  void hasIndex(int index) {
+    height.value = 55;
+    NotificationServices().updateNotificationContent(index);
   }
 
   @override
   void dispose() {
     super.dispose();
     dataBox.close();
+    thumb.close();
     Hive.close();
     isPlaying.cancel();
     _currentIndexStream.cancel();
+    NotificationServices().disposeNotification();
     disposeAudio();
   }
 
@@ -82,26 +96,19 @@ class _HomePageState extends State<HomePage>
                 minHeight: snapshot,
                 maxHeight: MediaQuery.of(context).size.height,
                 body: Scaffold(
-                  appBar: AppBar(
-                    title: ValueListenableBuilder<int>(
-                      valueListenable: currentPage,
-                      builder: (context, snapshot, child) {
-                        return title[snapshot];
-                      },
-                    ),
-                    actions: [
-                      IconButton(
-                        icon: Icon(Icons.refresh),
-                        onPressed: () => MusicDatabase().getAudio(),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.functions),
-                        onPressed: () async {
-                          var k = player.sequence;
-                          print(k[1]);
-                        },
-                      )
-                    ],
+                  appBar: PreferredSize(
+                    preferredSize: Size(MediaQuery.of(context).size.width,
+                        AppBar().preferredSize.height),
+                    child: Container(
+                        margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).padding.top),
+                        // alignment: Alignment.bottomLeft,
+                        child: ValueListenableBuilder<int>(
+                          valueListenable: currentPage,
+                          builder: (context, snapshot, child) {
+                            return CustumAppBar(appbar: appbar, i: snapshot);
+                          },
+                        )),
                   ),
                   backgroundColor: Colors.black,
                   body: Stack(
@@ -172,7 +179,7 @@ class _HomePageState extends State<HomePage>
                                     width:
                                         MediaQuery.of(context).size.width * .7,
                                     child: Text(
-                                      playlist[snapshot.data].title,
+                                      player.sequence[snapshot.data].tag.title,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
@@ -222,6 +229,43 @@ class _HomePageState extends State<HomePage>
   }
 }
 
+class CustumAppBar extends StatefulWidget {
+  const CustumAppBar({
+    Key key,
+    @required this.appbar,
+    @required this.i,
+  }) : super(key: key);
+
+  final List<Widget> appbar;
+  final int i;
+
+  @override
+  _CustumAppBarState createState() => _CustumAppBarState();
+}
+
+class _CustumAppBarState extends State<CustumAppBar> {
+  double dp = 50;
+  double o = 0;
+  @override
+  Widget build(BuildContext context) {
+    Future.delayed(const Duration(microseconds: 1), () {
+      setState(() {
+        dp = 0;
+        o = 1;
+      });
+    });
+    return AnimatedOpacity(
+      opacity: o,
+      duration: Duration(seconds: 1),
+      child: AnimatedPadding(
+        padding: EdgeInsets.only(left: dp),
+        duration: Duration(seconds: 1),
+        child: widget.appbar[widget.i],
+      ),
+    );
+  }
+}
+
 class MiniSeekBar extends StatelessWidget {
   const MiniSeekBar({
     Key key,
@@ -266,3 +310,16 @@ class MiniSeekBar extends StatelessWidget {
     );
   }
 }
+
+// actions: [
+//                       IconButton(
+//                         icon: Icon(Icons.refresh),
+//                         onPressed: () => MusicDatabase().getAudio(),
+//                       ),
+//                       IconButton(
+//                         icon: Icon(Icons.functions),
+//                         onPressed: () async {
+//                           print(player.currentIndex);
+//                         },
+//                       )
+//                     ],

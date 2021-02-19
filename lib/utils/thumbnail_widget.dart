@@ -8,18 +8,19 @@ class Thumbnail {
     return FutureBuilder(
         future: getThumb(id),
         builder: (context, snapshot) {
+          Widget dynWidget = Center(child: Icon(Icons.music_note));
           if (snapshot.connectionState != ConnectionState.waiting) {
             if (snapshot.data != null) {
-              return Hero(tag: "hero",child: Image.memory(snapshot.data));
-            } else {
-              return Center(
-                child: Icon(Icons.music_note),
+              dynWidget = Image.memory(snapshot.data);
+              return AnimatedSwitcher(
+                duration: Duration(seconds: 1),
+                child: dynWidget,
               );
+            } else {
+              return dynWidget;
             }
           } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return dynWidget;
           }
         });
   }

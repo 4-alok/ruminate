@@ -50,6 +50,7 @@ class _ScrollbarState extends State<ScrollBarControl>
     })());
     _textDirection = Directionality.of(context);
     _materialPainter = ScrollbarPainter(
+      // radius: Radius.circular(10),
       color: Colors.blue,
       textDirection: _textDirection,
       thickness: 13,
@@ -98,13 +99,11 @@ class _ScrollbarState extends State<ScrollBarControl>
           if (metrics.maxScrollExtent <= metrics.minScrollExtent) {
             return false;
           }
-
           if ((notification is ScrollUpdateNotification ||
               notification is OverscrollNotification)) {
             if (_fadeoutAnimationController.status != AnimationStatus.forward) {
               _fadeoutAnimationController.forward();
             }
-
             _materialPainter.update(
               notification.metrics,
               notification.metrics.axisDirection,
@@ -122,18 +121,14 @@ class _ScrollbarState extends State<ScrollBarControl>
         child: GestureDetector(
           onVerticalDragUpdate: (details) {
             final total = widget.controller.position.maxScrollExtent;
-
             if (widget.controller.position.extentBefore > 0 ||
                 widget.controller.position.extentAfter > 0) {
               if (details.localPosition.dy < 0)
                 return widget.controller.jumpTo(0);
-
               final offSet = total /
                   widget.controller.position.extentInside *
                   details.localPosition.dy;
-
               if (offSet > total) return widget.controller.jumpTo(total);
-
               widget.controller.jumpTo(offSet);
             }
           },

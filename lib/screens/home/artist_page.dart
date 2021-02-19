@@ -32,6 +32,7 @@ class _ArtistPageState extends State<ArtistPage> {
         return ScrollBarControl(
           controller: _scrollController,
           child: ListView.builder(
+            controller: _scrollController,
             itemCount: artist.length,
             physics: BouncingScrollPhysics(),
             itemBuilder: (_, index) {
