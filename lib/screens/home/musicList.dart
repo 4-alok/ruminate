@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ruminate/models/data_model.dart';
+import 'package:ruminate/screens/widget/appBar.dart';
 import 'package:ruminate/screens/widget/scroll_bar_controller.dart';
 import 'package:ruminate/utils/thumbnail_widget.dart';
 import '../../utils/audio_service.dart';
@@ -19,7 +20,7 @@ class _MusicListPageState extends State<MusicListPage> {
   final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
+    return ValueListenableBuilder<Box<DataModel>>(
       valueListenable: widget.dataBox.listenable(),
       builder: (context, Box<DataModel> items, _) {
         if (items == null || items.length == 0) {
@@ -29,43 +30,59 @@ class _MusicListPageState extends State<MusicListPage> {
         }
         List<DataModel> data = items.values.toList().cast<DataModel>();
 
-        data.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-        return ScrollBarControl(
-          controller: _scrollController,
-          child: ListView.builder(
-            physics: BouncingScrollPhysics(),
-            controller: _scrollController,
-            itemCount: data.length,
-            itemBuilder: (_, i) {
-              return ListTile(
-                leading: data[i].complete == true
-                    ? CircleAvatar(child: Icon(Icons.music_note))
-                    : CircleAvatar(
-                        child: Thumbnail().imageThumbnail(
-                            data[i].path.hashCode, BoxFit.cover)),
-                title: Text(
-                  data[i].title == "" ? data[i].path : data[i].title,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-                subtitle: Text(
-                  data[i].artist == '' ? "<unknown>" : data[i].artist,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-                trailing: IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.more_vert,
-                    color: Colors.white,
-                  ),
-                ),
-                onTap: () {
-                  initPlayList(data, i);
+        // data.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        return ValueListenableBuilder<Sorting>(
+          valueListenable: sorting,
+          builder: (context, snapshot, child) {
+            if(snapshot == Sorting.date){
+              data.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+            } else if (snapshot == Sorting.album){
+              data.sort((a, b) => a.album.compareTo(b.album));
+            } else if(snapshot == Sorting.artist){
+              data.sort((a, b) => a.artist.compareTo(b.artist));
+            } else if (snapshot == Sorting.name){
+              data.sort((a, b) => a.title.compareTo(b.title));
+            } else {
+              data.sort((a, b) => a.title.compareTo(b.title));
+            }
+            return ScrollBarControl(
+              controller: _scrollController,
+              child: ListView.builder(
+                physics: BouncingScrollPhysics(),
+                controller: _scrollController,
+                itemCount: data.length,
+                itemBuilder: (_, i) {
+                  return ListTile(
+                    leading: data[i].complete == true
+                        ? CircleAvatar(child: Icon(Icons.music_note))
+                        : CircleAvatar(
+                            child: Thumbnail().imageThumbnail(
+                                data[i].path.hashCode, BoxFit.cover)),
+                    title: Text(
+                      data[i].title == "" ? data[i].path : data[i].title,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    subtitle: Text(
+                      data[i].artist == '' ? "<unknown>" : data[i].artist,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    trailing: IconButton(
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.more_vert,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onTap: () {
+                      initPlayList(data, i);
+                    },
+                  );
                 },
-              );
-            },
-          ),
+              ),
+            );
+          }
         );
       },
     );

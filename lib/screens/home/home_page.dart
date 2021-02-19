@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:hive/hive.dart';
 import 'package:flutter/material.dart';
+import 'package:ruminate/screens/widget/appBar.dart';
 import 'package:ruminate/utils/database.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../../main.dart';
@@ -27,18 +28,6 @@ class _HomePageState extends State<HomePage>
   Box<DataModel> dataBox;
   final ValueNotifier<double> height = ValueNotifier<double>(0);
   final ValueNotifier<int> currentPage = ValueNotifier<int>(0);
-  final title = [
-    "Music",
-    "Album",
-    "Artist",
-    "Folder",
-  ];
-  List<Widget> appbar = [
-    ListTile(title: Text('Music')),
-    ListTile(title: Text('Album')),
-    ListTile(title: Text('Artist')),
-    ListTile(title: Text('Folder')),
-  ];
   StreamSubscription<int> _currentIndexStream;
   StreamSubscription<bool> isPlaying;
 

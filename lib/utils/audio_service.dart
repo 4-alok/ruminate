@@ -5,6 +5,8 @@ import 'package:ruminate/models/model.dart';
 
 AudioPlayer player;
 
+enum Sorting {name,date,artist,album,fav}
+
 initPlayList(List<DataModel> songs, int i) async {
   await player.setAudioSource(
     ConcatenatingAudioSource(
