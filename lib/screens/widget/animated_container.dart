@@ -36,6 +36,7 @@ class OpenContainerWidget extends StatelessWidget {
           actions: [IconButton(icon: Icon(Icons.more_vert), onPressed: () {})],
         ),
         body: ListView.builder(
+          physics: BouncingScrollPhysics(),
           itemCount: songs.length,
           itemBuilder: (context, index) {
             return ListTile(

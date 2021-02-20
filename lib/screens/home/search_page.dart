@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:ruminate/models/data_model.dart';
 import 'package:ruminate/models/model.dart';
+import 'package:ruminate/screens/widget/animated_container.dart';
 import 'package:ruminate/screens/widget/song_widget.dart';
+import 'package:ruminate/utils/audio_service.dart';
 
 class SearchPage extends StatefulWidget {
   SearchPage({Key key}) : super(key: key);
@@ -12,11 +14,10 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final ValueNotifier<String> searchWord = ValueNotifier<String>('');
-  Box<DataModel> dataBox;
-  List<DataModel> songs;
-  List<DataModel> songResult;
-  List<ArtistModel> artistResult;
-  List<DataModel> albumResult;
+  List<DataModel> songs = [];
+  List<DataModel> songResult = [];
+  List<ArtistModel> artistResult = [];
+  List<AlbumModel> albumResult = [];
 
   @override
   void initState() {
@@ -26,6 +27,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   void dispose() {
+    searchWord.dispose();
     super.dispose();
   }
 
@@ -34,6 +36,7 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
         appBar: AppBar(
           title: TextField(
+            autofocus: true,
             style: TextStyle(fontSize: 20),
             keyboardType: TextInputType.text,
             decoration: InputDecoration(
@@ -70,19 +73,40 @@ class _SearchPageState extends State<SearchPage> {
                     ? Container(
                         child: Center(child: Text("No found")),
                       )
-                    : ListView(children: [
-                        songResult != null
-                            ? searchTitle(context, "song")
-                            : Container(),
+                    : ListView(children: <Widget>[
+                        songResult.isEmpty
+                            ? Container()
+                            : searchTitle(context, "Song"),
                         ...songResult
                             .map(
                               (e) => musicTile(e.complete, e.path.hashCode,
-                                  e.title, e.artist, () {}, () {}),
+                                  e.title, e.artist, () {}, () {
+                                initPlayList([e], 0);
+                              }),
                             )
                             .toList(),
-                        // artistResult != null
-                        //     ? searchTitle(context, "Artist")
-                        //     : Container(),
+                        albumResult.isEmpty
+                            ? Container()
+                            : searchTitle(context, "Album"),
+                        ...albumResult
+                            .map((e) => Card(
+                                  child: OpenContainerWidget(
+                                    primaryTitle: e.albumName,
+                                    songs: e.songs,
+                                  ),
+                                ))
+                            .toList(),
+                        artistResult.isEmpty
+                            ? Container()
+                            : searchTitle(context, "Artist"),
+                        ...artistResult
+                            .map((e) => Card(
+                                  child: OpenContainerWidget(
+                                    primaryTitle: e.artist,
+                                    songs: e.songs,
+                                  ),
+                                ))
+                            .toList(),
                       ]);
           },
         ));
@@ -100,27 +124,51 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _search(String val) async {
+
     searchWord.value = val;
+
 
     songResult = songs
         .where((element) =>
             element.title.toLowerCase().contains(val.toLowerCase()))
         .toList();
 
-    // artistResult = songs
-    //     .where((element) =>
-    //         element.artist.toLowerCase().contains(val.toLowerCase()))
-    //     .toList();
+    albumResult.clear();
+    for (DataModel entity in songs
+        .where((element) =>
+            element.album.toLowerCase().contains(val.toLowerCase()))
+        .toList()) {
+      if (albumResult
+          .where((element) => element.albumName == entity.album)
+          .isEmpty) {
+        albumResult.add(AlbumModel(albumName: entity.album, songs: [entity]));
+      } else {
+        int i = albumResult
+            .indexWhere((element) => element.albumName == entity.album);
+        albumResult[i].songs.add(entity);
+      }
+    }
 
-    // albumResult = songs
-    //     .where((element) =>
-    //         element.album.toLowerCase().contains(val.toLowerCase()))
-    //     .toList();
+    artistResult.clear();
+    for (DataModel entity in songs
+        .where((element) =>
+            element.artist.toLowerCase().contains(val.toLowerCase()))
+        .toList()) {
+      if (artistResult
+          .where((element) => element.artist == entity.artist)
+          .isEmpty) {
+        artistResult.add(ArtistModel(artist: entity.artist, songs: [entity]));
+      } else {
+        int i = artistResult
+            .indexWhere((element) => element.artist == entity.album);
+        artistResult[i].songs.add(entity);
+      }
+    }
   }
 
   void _resetVal() {
-    songResult = [];
-    artistResult = [];
-    albumResult = [];
+    songResult.clear();
+    artistResult.clear();
+    albumResult.clear();
   }
 }
