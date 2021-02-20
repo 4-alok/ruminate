@@ -17,7 +17,7 @@ class OpenContainerWidget extends StatelessWidget {
     return OpenContainer(
       openColor: Colors.black,
       closedColor: Colors.grey[900],
-      transitionDuration: Duration(milliseconds: 400),
+      transitionDuration: Duration(milliseconds: 200),
       closedBuilder: (context, action) => ListTile(
         title: Text(primaryTitle),
         subtitle: Text(
@@ -40,7 +40,7 @@ class OpenContainerWidget extends StatelessWidget {
           itemBuilder: (context, index) {
             return ListTile(
               onTap: () {
-                initPlayList(songs,index);
+                initPlayList(songs, index);
               },
               leading: songs[index].complete == true
                   ? CircleAvatar(child: Icon(Icons.music_note))

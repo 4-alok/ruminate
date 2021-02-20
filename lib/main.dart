@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:hive/hive.dart';
 import 'package:ruminate/screens/home/home_page.dart';
+import 'package:ruminate/screens/home/search_page.dart';
 import 'package:ruminate/screens/intro_page/intro.dart';
 import 'models/data_model.dart';
 
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(),
         '/setting': (context) => Scaffold(),
         '/intro': (context) => IntroPage(),
+        '/search': (context) => SearchPage()
       },
     );
   }

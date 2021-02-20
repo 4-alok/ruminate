@@ -95,7 +95,8 @@ class _HomePageState extends State<HomePage>
                         child: ValueListenableBuilder<int>(
                           valueListenable: currentPage,
                           builder: (context, snapshot, child) {
-                            return CustumAppBar(appbar: appbar, i: snapshot);
+                            return CustumAppBar(
+                                appbar: appbar(context), i: snapshot);
                           },
                         )),
                   ),
@@ -233,24 +234,18 @@ class CustumAppBar extends StatefulWidget {
 }
 
 class _CustumAppBarState extends State<CustumAppBar> {
-  double dp = 50;
   double o = 0;
   @override
   Widget build(BuildContext context) {
     Future.delayed(const Duration(microseconds: 1), () {
       setState(() {
-        dp = 0;
         o = 1;
       });
     });
     return AnimatedOpacity(
       opacity: o,
       duration: Duration(seconds: 1),
-      child: AnimatedPadding(
-        padding: EdgeInsets.only(left: dp),
-        duration: Duration(seconds: 1),
-        child: widget.appbar[widget.i],
-      ),
+      child: widget.appbar[widget.i],
     );
   }
 }
@@ -299,16 +294,3 @@ class MiniSeekBar extends StatelessWidget {
     );
   }
 }
-
-// actions: [
-//                       IconButton(
-//                         icon: Icon(Icons.refresh),
-//                         onPressed: () => MusicDatabase().getAudio(),
-//                       ),
-//                       IconButton(
-//                         icon: Icon(Icons.functions),
-//                         onPressed: () async {
-//                           print(player.currentIndex);
-//                         },
-//                       )
-//                     ],
