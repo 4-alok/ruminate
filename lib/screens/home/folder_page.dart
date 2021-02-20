@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:ruminate/models/data_model.dart';
-import 'package:ruminate/models/model.dart';
-import 'package:ruminate/screens/widget/animated_container.dart';
+import 'package:Ruminate/models/data_model.dart';
+import 'package:Ruminate/models/model.dart';
+import 'package:Ruminate/screens/widget/animated_container.dart';
 
 class FolderMusicPage extends StatefulWidget {
   FolderMusicPage({Key key, @required this.dataBox}) : super(key: key);

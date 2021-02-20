@@ -1,5 +1,5 @@
+import 'package:Ruminate/utils/thumbnail_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:ruminate/utils/thumbnail_widget.dart';
 
 Widget musicTile(bool icon, int id, String title, String subtitle,
     Function trallingFunction, Function onTapFunction) {

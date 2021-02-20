@@ -1,7 +1,7 @@
+import 'package:Ruminate/models/data_model.dart';
+import 'package:Ruminate/models/model.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:audio_session/audio_session.dart';
-import 'package:ruminate/models/data_model.dart';
-import 'package:ruminate/models/model.dart';
 
 AudioPlayer player;
 

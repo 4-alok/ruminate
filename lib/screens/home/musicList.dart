@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:ruminate/models/data_model.dart';
-import 'package:ruminate/screens/widget/appBar.dart';
-import 'package:ruminate/screens/widget/scroll_bar_controller.dart';
-import 'package:ruminate/screens/widget/song_widget.dart';
+import 'package:Ruminate/models/data_model.dart';
+import 'package:Ruminate/screens/widget/appBar.dart';
+import 'package:Ruminate/screens/widget/scroll_bar_controller.dart';
+import 'package:Ruminate/screens/widget/song_widget.dart';
 import '../../utils/audio_service.dart';
 
 class MusicListPage extends StatefulWidget {

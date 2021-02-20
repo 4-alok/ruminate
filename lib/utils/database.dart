@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:Ruminate/models/data_model.dart';
 import 'package:audiotagger/audiotagger.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:ruminate/models/data_model.dart';
 import 'package:image/image.dart';
 import '../main.dart';
 

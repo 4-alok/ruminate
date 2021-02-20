@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:ruminate/models/model.dart';
-import 'package:ruminate/models/data_model.dart';
-import 'package:ruminate/screens/widget/scroll_bar_controller.dart';
-import 'package:ruminate/utils/thumbnail_widget.dart';
+import 'package:Ruminate/models/model.dart';
+import 'package:Ruminate/models/data_model.dart';
+import 'package:Ruminate/screens/widget/scroll_bar_controller.dart';
+import 'package:Ruminate/utils/thumbnail_widget.dart';
 
 import 'album_song_page.dart';
 

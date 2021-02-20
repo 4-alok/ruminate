@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:hive/hive.dart';
 import 'package:flutter/material.dart';
-import 'package:ruminate/screens/widget/appBar.dart';
-import 'package:ruminate/utils/database.dart';
+import 'package:Ruminate/screens/widget/appBar.dart';
+import 'package:Ruminate/utils/database.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../../main.dart';
 import '../../models/data_model.dart';

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:ruminate/models/data_model.dart';
-import 'package:ruminate/models/model.dart';
-import 'package:ruminate/screens/widget/animated_container.dart';
-import 'package:ruminate/screens/widget/song_widget.dart';
-import 'package:ruminate/utils/audio_service.dart';
+import 'package:Ruminate/models/data_model.dart';
+import 'package:Ruminate/models/model.dart';
+import 'package:Ruminate/screens/widget/animated_container.dart';
+import 'package:Ruminate/screens/widget/song_widget.dart';
+import 'package:Ruminate/utils/audio_service.dart';
 
 class SearchPage extends StatefulWidget {
   SearchPage({Key key}) : super(key: key);
@@ -124,9 +124,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _search(String val) async {
-
     searchWord.value = val;
-
 
     songResult = songs
         .where((element) =>

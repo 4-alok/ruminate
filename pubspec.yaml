@@ -1,4 +1,4 @@
-name: ruminate
+name: Ruminate
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -40,6 +40,7 @@ dependencies:
   cupertino_icons: ^1.0.0
 
 dev_dependencies:
+  flutter_native_splash: ^0.3.0
   hive_generator: ^0.8.2
   build_runner: ^1.11.1
   flutter_test:
@@ -86,3 +87,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_native_splash:
+  color: "#000000"
+  image: assets/icon.png

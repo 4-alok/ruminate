@@ -1,5 +1,5 @@
+import 'package:Ruminate/screens/home/search_page.dart';
 import 'package:flutter/material.dart';
-import 'package:ruminate/screens/home/search_page.dart';
 import './../../utils/audio_service.dart';
 
 final ValueNotifier<Sorting> sorting = ValueNotifier<Sorting>(Sorting.name);

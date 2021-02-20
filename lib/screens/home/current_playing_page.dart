@@ -4,8 +4,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:ruminate/utils/audio_service.dart';
-import 'package:ruminate/utils/thumbnail_widget.dart';
+import 'package:Ruminate/utils/audio_service.dart';
+import 'package:Ruminate/utils/thumbnail_widget.dart';
 
 class CurrentPlayingPage extends StatefulWidget {
   CurrentPlayingPage({Key key}) : super(key: key);
