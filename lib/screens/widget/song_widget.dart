@@ -1,4 +1,4 @@
-import 'package:Ruminate/utils/thumbnail_widget.dart';
+import 'package:Ruminate/utils/thumbnail_manager.dart';
 import 'package:flutter/material.dart';
 
 Widget musicTile(BuildContext context, bool icon, int id, String title,

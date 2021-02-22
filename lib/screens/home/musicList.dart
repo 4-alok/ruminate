@@ -4,7 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:Ruminate/models/data_model.dart';
 import 'package:Ruminate/screens/widget/appBar.dart';
 import 'package:Ruminate/screens/widget/scroll_bar_controller.dart';
-import 'package:Ruminate/screens/widget/song_widget.dart';
+import '../widget/song_widget.dart';
 import '../../utils/audio_service.dart';
 
 class MusicListPage extends StatefulWidget {
@@ -43,6 +43,8 @@ class _MusicListPageState extends State<MusicListPage> {
                 data.sort((a, b) => a.artist.compareTo(b.artist));
               } else if (snapshot == Sorting.name) {
                 data.sort((a, b) => a.title.compareTo(b.title));
+              } else if (snapshot == Sorting.fav) {
+                // data.sort((a, b) => a.title.compareTo(b.title));
               } else {
                 data.sort((a, b) => a.title.compareTo(b.title));
               }

@@ -9,9 +9,9 @@ class AlbumModel {
 
 class FolderModel {
   String folder;
+  String title;
   List<DataModel> songs;
-
-  FolderModel({this.folder, this.songs});
+  FolderModel({this.folder,this.title, this.songs});
 }
 
 class ArtistModel {

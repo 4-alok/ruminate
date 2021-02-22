@@ -12,7 +12,7 @@ import 'albumPage.dart';
 import 'musicList.dart';
 import 'folder_page.dart';
 import 'artist_page.dart';
-import 'current_playing_page.dart';
+import 'currentPlayer/current_playing_page.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);

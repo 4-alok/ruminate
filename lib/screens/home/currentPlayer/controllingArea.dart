@@ -1,152 +1,60 @@
-import 'dart:ui';
-import 'dart:math';
 import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
+import 'package:Ruminate/screens/home/currentPlayer/seekBar.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:Ruminate/utils/audio_service.dart';
-import 'package:Ruminate/utils/thumbnail_widget.dart';
+import '../../../utils/audio_service.dart';
+import 'package:flutter/material.dart';
 
-class CurrentPlayingPage extends StatefulWidget {
-  CurrentPlayingPage({Key key}) : super(key: key);
-
+class ControllingArea extends StatefulWidget {
+  const ControllingArea({
+    Key key,
+  }) : super(key: key);
   @override
-  _CurrentPlayingPageState createState() => _CurrentPlayingPageState();
+  _ControllingAreaState createState() => _ControllingAreaState();
 }
 
-class _CurrentPlayingPageState extends State<CurrentPlayingPage>
+class _ControllingAreaState extends State<ControllingArea>
     with SingleTickerProviderStateMixin {
-  AnimationController playPauseController2;
-  final currentPlayingPageController =
-      PageController(initialPage: player.currentIndex);
+  AnimationController playPauseAController;
   StreamSubscription<bool> isPlaying;
-  StreamSubscription<int> _currentIndexStream;
-
   @override
   void initState() {
-    super.initState();
-    playPauseController2 = AnimationController(
+    playPauseAController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 400),
       reverseDuration: Duration(milliseconds: 400),
     );
-
     isPlaying = player.playingStream.listen((playing) {
-      playing ? playPauseController2.forward() : playPauseController2.reverse();
+      playing ? playPauseAController.forward() : playPauseAController.reverse();
     });
-
-    _currentIndexStream = player.currentIndexStream.listen((event) {
-      player.shuffleModeEnabled
-          ? currentPlayingPageController.jumpToPage(event)
-          : currentPlayingPageController.animateToPage(event,
-              duration: Duration(milliseconds: 400), curve: Curves.decelerate);
-    });
+    super.initState();
   }
 
   @override
   void dispose() {
+    playPauseAController.dispose();
     isPlaying.cancel();
-    _currentIndexStream.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Stack(
-        children: [
-          Container(
-            child: StreamBuilder<List<IndexedAudioSource>>(
-                stream: player.sequenceStream,
-                builder: (context, snapshot) {
-                  return PageView.builder(
-                    onPageChanged: (val) async {
-                      if (val == player.currentIndex + 1) {
-                        await player.seekToNext();
-                      } else if (val == player.currentIndex - 1) {
-                        await player.seekToPrevious();
-                      }
-                    },
-                    controller: currentPlayingPageController,
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
-                      return Stack(
-                        children: [
-                          Container(
-                            height: MediaQuery.of(context).size.height,
-                            width: MediaQuery.of(context).size.width,
-                            child: FutureBuilder(
-                              future:
-                                  // Thumbnail().getThumb(playlist[index].path.hashCode),
-                                  Thumbnail().getThumb(
-                                      snapshot.data[index].tag.path.hashCode),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return Container(
-                                    color: Colors.black,
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.music_note,
-                                        size: 500,
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  return Image.memory(
-                                    snapshot.data,
-                                    fit: BoxFit.cover,
-                                  );
-                                }
-                              },
-                            ),
-                          ),
-                          Container(
-                            height: MediaQuery.of(context).size.height,
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                              child: Container(
-                                color: Colors.transparent,
-                                height: MediaQuery.of(context).size.height,
-                                width: MediaQuery.of(context).size.width,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: MediaQuery.of(context).size.height * .760,
-                            decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                              colors: [
-                                Colors.transparent,
-                                Colors.black.withOpacity(0.4)
-                              ],
-                              stops: [0.8, 1],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                            )),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }),
-          ),
-          mainPlayingPage(context)
-        ],
-      ),
-    );
-  }
-
-  Container mainPlayingPage(BuildContext context) {
-    return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           StreamBuilder<int>(
               stream: player.currentIndexStream,
               builder: (context, snapshot) {
+                if (snapshot.data == 0) {
+                  return Container();
+                }
                 return Container(
                     width: MediaQuery.of(context).size.height,
-                    height: MediaQuery.of(context).size.height * .12,
+                    margin: EdgeInsets.only(
+                        right: 25,
+                        left: 25,
+                        top: MediaQuery.of(context).padding.top + 25),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -173,14 +81,11 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
                     ));
               }),
           Container(
-            width: 0,
-            height: MediaQuery.of(context).size.height * .640,
-          ),
-          Container(
-            color: Colors.black.withOpacity(.4),
-            // color: Colors.green,
+            // color: Colors.black.withOpacity(.4),
+            color: Colors.transparent,
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * .240,
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).padding.bottom + 10),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -318,7 +223,7 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
                               child: Center(
                                 child: AnimatedIcon(
                                   icon: AnimatedIcons.play_pause,
-                                  progress: playPauseController2,
+                                  progress: playPauseAController,
                                   // size: 30,
                                   color: Colors.black87,
                                 ),
@@ -366,125 +271,3 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage>
         : "${twoDigits(duration.inHours)}:$min:$sec";
   }
 }
-
-class SeekBar extends StatefulWidget {
-  final Duration duration;
-  final Duration position;
-  final ValueChanged<Duration> onChanged;
-  final ValueChanged<Duration> onChangeEnd;
-
-  SeekBar({
-    @required this.duration,
-    @required this.position,
-    this.onChanged,
-    this.onChangeEnd,
-  });
-
-  @override
-  _SeekBarState createState() => _SeekBarState();
-}
-
-class _SeekBarState extends State<SeekBar> {
-  double _dragValue;
-
-  @override
-  Widget build(BuildContext context) {
-    return SliderTheme(
-      data: SliderThemeData(
-          trackHeight: 1,
-          thumbShape: RoundSliderThumbShape(enabledThumbRadius: 7)),
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        child: Slider(
-          min: 0.0,
-          max: widget.duration.inMilliseconds.toDouble(),
-          value: min(_dragValue ?? widget.position.inMilliseconds.toDouble(),
-              widget.duration.inMilliseconds.toDouble()),
-          onChanged: (value) {
-            setState(() {
-              _dragValue = value;
-            });
-            if (widget.onChanged != null) {
-              widget.onChanged(Duration(milliseconds: value.round()));
-            }
-          },
-          onChangeEnd: (value) {
-            if (widget.onChangeEnd != null) {
-              widget.onChangeEnd(Duration(milliseconds: value.round()));
-            }
-            _dragValue = null;
-          },
-        ),
-      ),
-    );
-  }
-}
-
-// class UpdatedSeekbar extends StatefulWidget {
-//   UpdatedSeekbar({Key key}) : super(key: key);
-
-//   @override
-//   _UpdatedSeekbarState createState() => _UpdatedSeekbarState();
-// }
-
-// class _UpdatedSeekbarState extends State<UpdatedSeekbar> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//        child: child,
-//     );
-//   }
-// }
-
-// class SeekBar extends StatefulWidget {
-//   final Duration duration;
-//   final Duration position;
-//   final ValueChanged<Duration> onChanged;
-//   final ValueChanged<Duration> onChangeEnd;
-
-//   SeekBar({
-//     @required this.duration,
-//     @required this.position,
-//     this.onChanged,
-//     this.onChangeEnd,
-//   });
-
-//   @override
-//   _SeekBarState createState() => _SeekBarState();
-// }
-
-// class _SeekBarState extends State<SeekBar> {
-//   double _dragValue;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SliderTheme(
-//       data: SliderThemeData(
-//           trackHeight: 1,
-//           thumbShape: RoundSliderThumbShape(enabledThumbRadius: 7)),
-//       child: Container(
-//         width: MediaQuery.of(context).size.width,
-//         child: Slider(
-//           min: 0.0,
-//           max: widget.duration.inMilliseconds.toDouble(),
-//           value: min(_dragValue ?? widget.position.inMilliseconds.toDouble(),
-//               widget.duration.inMilliseconds.toDouble()),
-//           onChanged: (value) {
-//             setState(() {
-//               _dragValue = value;
-//             });
-//             if (widget.onChanged != null) {
-//               widget.onChanged(Duration(milliseconds: value.round()));
-//             }
-//           },
-//           onChangeEnd: (value) {
-//             if (widget.onChangeEnd != null) {
-//               widget.onChangeEnd(Duration(milliseconds: value.round()));
-//             }
-//             _dragValue = null;
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }

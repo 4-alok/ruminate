@@ -84,9 +84,11 @@ class MusicDatabase {
           : map['album'],
       albumArtist: map['albumArtist'],
       year: map['year'],
-      folder: getfolder(File(path).parent.path),
+      folder: File(path).parent.path.split('/').last,
+      fTitle: getfolder(File(path).parent.path),
       createdAt: await File(path).lastModified(),
       complete: map['title'] == "" ? true : false,
+      fav: false,
     );
     dataBox.add(data);
   }

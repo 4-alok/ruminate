@@ -18,17 +18,19 @@ class DataModelAdapter extends TypeAdapter<DataModel> {
       albumArtist: fields[4] as String,
       year: fields[5] as String,
       folder: fields[6] as String,
-      createdAt: fields[7] as DateTime,
-      duration: fields[8] as String,
-      playCount: fields[9] as int,
-      complete: fields[10] as bool,
+      fTitle: fields[7] as String,
+      createdAt: fields[8] as DateTime,
+      duration: fields[9] as String,
+      playCount: fields[10] as int,
+      complete: fields[11] as bool,
+      fav: fields[12] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, DataModel obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.path)
       ..writeByte(1)
@@ -44,13 +46,17 @@ class DataModelAdapter extends TypeAdapter<DataModel> {
       ..writeByte(6)
       ..write(obj.folder)
       ..writeByte(7)
-      ..write(obj.createdAt)
+      ..write(obj.fTitle)
       ..writeByte(8)
-      ..write(obj.duration)
+      ..write(obj.createdAt)
       ..writeByte(9)
-      ..write(obj.playCount)
+      ..write(obj.duration)
       ..writeByte(10)
-      ..write(obj.complete);
+      ..write(obj.playCount)
+      ..writeByte(11)
+      ..write(obj.complete)
+      ..writeByte(12)
+      ..write(obj.fav);
   }
 
   @override

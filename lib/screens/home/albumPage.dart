@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:Ruminate/models/model.dart';
 import 'package:Ruminate/models/data_model.dart';
 import 'package:Ruminate/screens/widget/scroll_bar_controller.dart';
-import 'package:Ruminate/utils/thumbnail_widget.dart';
+import 'package:Ruminate/utils/thumbnail_manager.dart';
 
 import 'album_song_page.dart';
 

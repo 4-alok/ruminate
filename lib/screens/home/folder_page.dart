@@ -33,7 +33,9 @@ class _FolderMusicPageState extends State<FolderMusicPage> {
           itemBuilder: (_, index) {
             return Card(
               child: OpenContainerWidget(
-                primaryTitle: folder[index].folder,
+                primaryTitle: folder[index].title == ''
+                    ? folder[index].folder
+                    : folder[index].title,
                 songs: folder[index].songs,
               ),
             );
@@ -45,17 +47,18 @@ class _FolderMusicPageState extends State<FolderMusicPage> {
 
   void _sortFolder(Box<DataModel> items) {
     List<DataModel> data = items.values.toList().cast<DataModel>();
-    data.sort((a, b) => a.folder.compareTo(b.folder));
+    data.sort((a, b) => a.fTitle.compareTo(b.fTitle));
     for (DataModel entity in data) {
-      if (folder.where((element) => element.folder == entity.folder).isEmpty) {
-        folder.add(FolderModel(folder: entity.folder, songs: [entity]));
+      if (folder.where((element) => element.title == entity.fTitle).isEmpty) {
+        folder.add(FolderModel(
+            folder: entity.folder, title: entity.fTitle, songs: [entity]));
       } else {
-        int i = folder.indexWhere((element) => element.folder == entity.folder);
+        int i = folder.indexWhere((element) => element.title == entity.fTitle);
         if (folder[i].songs.where((element) => element == entity).isEmpty) {
           folder[i].songs.add(entity);
         }
       }
     }
-    folder.sort((a, b) => a.folder.compareTo(b.folder));
+    folder.sort((a, b) => a.title.compareTo(b.title));
   }
 }

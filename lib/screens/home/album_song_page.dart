@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:Ruminate/models/model.dart';
 import 'package:Ruminate/utils/audio_service.dart';
-import 'package:Ruminate/utils/thumbnail_widget.dart';
+import 'package:Ruminate/utils/thumbnail_manager.dart';
 
 class AlbumSongsPage extends StatefulWidget {
   AlbumSongsPage({Key key, @required this.album}) : super(key: key);

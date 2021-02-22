@@ -1,6 +1,6 @@
 import 'package:Ruminate/models/data_model.dart';
 import 'package:Ruminate/utils/audio_service.dart';
-import 'package:Ruminate/utils/thumbnail_widget.dart';
+import 'package:Ruminate/utils/thumbnail_manager.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 

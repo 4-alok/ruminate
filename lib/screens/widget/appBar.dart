@@ -19,6 +19,7 @@ List<Widget> appbar(BuildContext context) {
               PopupMenuItem(child: Text("Artist"), value: Sorting.artist),
               PopupMenuItem(child: Text("Album"), value: Sorting.album),
               PopupMenuItem(child: Text("Date"), value: Sorting.date),
+              PopupMenuItem(child: Text("Favorites"), value: Sorting.fav),
             ],
             // color: Colors.black,
             onSelected: (sort) {
@@ -26,8 +27,7 @@ List<Widget> appbar(BuildContext context) {
             },
           ),
           IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () => _openSearch(context)),
+              icon: Icon(Icons.search), onPressed: () => _openSearch(context)),
           IconButton(icon: Icon(Icons.settings), onPressed: () => _openSetting),
         ],
       ),
