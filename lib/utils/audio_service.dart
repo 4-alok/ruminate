@@ -5,7 +5,7 @@ import 'package:audio_session/audio_session.dart';
 
 AudioPlayer player;
 
-enum Sorting {name,date,artist,album,fav}
+enum Sorting { name, date, artist, album, fav }
 
 initPlayList(List<DataModel> songs, int i) async {
   await player.setAudioSource(

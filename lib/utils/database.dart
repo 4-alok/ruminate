@@ -10,12 +10,24 @@ import '../main.dart';
 class MusicDatabase {
   Box<DataModel> dataBox = Hive.box<DataModel>("data");
   final tagger = new Audiotagger();
+  List<String> storage = [];
+  List<String> excluded = [
+    // "/storage/emulated/0/",
+    "/WhatsApp/Media/",
+    "/Android/data/",
+    "SoundRecord",
+    "./"
+  ];
 
-  getAudio() async {
+  Future<void> getAudio() async {
     for (Directory storagePath in (await getExternalStorageDirectories())) {
       Directory dir = Directory(storagePath.path.split('Android')[0]);
       getFiles(dir);
+      storage.add(dir.path);
+      // print(dir);
     }
+    // print("---------------> Length");
+    // print(dataBox.clear());
   }
 
   void getFiles(Directory dir) async {
@@ -23,7 +35,9 @@ class MusicDatabase {
       for (FileSystemEntity entity
           in (dir.listSync(recursive: false, followLinks: false))) {
         if (entity is File) {
-          if (entity.path.endsWith('.mp3')) {
+          if (entity.path.endsWith('.mp3') ||
+              entity.path.endsWith('.m4a') ||
+              entity.path.endsWith('.wav')) {
             if (dataBox.isEmpty) {
               await generateHThumbnail(entity.path);
               // await generateThumbnail(entity.path);
@@ -40,14 +54,21 @@ class MusicDatabase {
           }
         }
         if (entity is Directory) {
-          if (!entity.path.contains('WhatsApp/Media') &&
-              !entity.path.contains('/Android') &&
-              !entity.path.contains('/.')) {
+          if (!isExcluded(entity.path)) {
             getFiles(entity);
           }
         }
       }
     } catch (e) {}
+  }
+
+  bool isExcluded(String p) {
+    for (String s in excluded) {
+      if (p.contains(s)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   addSongToBox(String path) async {
@@ -63,11 +84,22 @@ class MusicDatabase {
           : map['album'],
       albumArtist: map['albumArtist'],
       year: map['year'],
-      folder: File(path).parent.path.split('/').last,
+      folder: getfolder(File(path).parent.path),
       createdAt: await File(path).lastModified(),
       complete: map['title'] == "" ? true : false,
     );
     dataBox.add(data);
+  }
+
+  String getfolder(String s) {
+    for (String k in storage) {
+      if (s == k) {
+        return s.split("/").last;
+      } else if (s.contains(k)) {
+        return s.split(k)[1].split('/').join(" • ");
+      }
+    }
+    return "";
   }
 
   printHive() {

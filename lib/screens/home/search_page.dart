@@ -79,8 +79,8 @@ class _SearchPageState extends State<SearchPage> {
                             : searchTitle(context, "Song"),
                         ...songResult
                             .map(
-                              (e) => musicTile(e.complete, e.path.hashCode,
-                                  e.title, e.artist, () {}, () {
+                              (e) => musicTile(context, e.complete,
+                                  e.path.hashCode, e.title, e.artist, () {
                                 initPlayList([e], 0);
                               }),
                             )

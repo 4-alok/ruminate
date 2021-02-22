@@ -17,6 +17,7 @@ class MusicListPage extends StatefulWidget {
 }
 
 class _MusicListPageState extends State<MusicListPage> {
+  final GlobalKey menuKey = new GlobalKey();
   final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,6 @@ class _MusicListPageState extends State<MusicListPage> {
                 data.sort((a, b) => b.createdAt.compareTo(a.createdAt));
               } else if (snapshot == Sorting.album) {
                 data.sort((a, b) => a.album.compareTo(b.album));
-                
               } else if (snapshot == Sorting.artist) {
                 data.sort((a, b) => a.artist.compareTo(b.artist));
               } else if (snapshot == Sorting.name) {
@@ -54,11 +54,12 @@ class _MusicListPageState extends State<MusicListPage> {
                   itemCount: data.length,
                   itemBuilder: (_, i) {
                     return musicTile(
+                        context,
                         data[i].complete,
                         data[i].path.hashCode,
                         data[i].title == "" ? data[i].path : data[i].title,
                         data[i].artist == '' ? "<unknown>" : data[i].artist,
-                        () {}, () {
+                        () {
                       initPlayList(data, i);
                     });
                   },
