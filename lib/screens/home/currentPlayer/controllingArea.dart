@@ -1,13 +1,20 @@
 import 'dart:async';
+import 'package:Ruminate/main.dart';
+import 'package:Ruminate/models/data_model.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:Ruminate/screens/home/currentPlayer/seekBar.dart';
+import 'package:Ruminate/utils/database.dart';
+import 'package:hive/hive.dart';
 import 'package:just_audio/just_audio.dart';
 import '../../../utils/audio_service.dart';
 import 'package:flutter/material.dart';
 
 class ControllingArea extends StatefulWidget {
-  const ControllingArea({
+  ControllingArea({
     Key key,
+    @required this.dataBox,
   }) : super(key: key);
+  Box<DataModel> dataBox;
   @override
   _ControllingAreaState createState() => _ControllingAreaState();
 }
@@ -46,7 +53,7 @@ class _ControllingAreaState extends State<ControllingArea>
           StreamBuilder<int>(
               stream: player.currentIndexStream,
               builder: (context, snapshot) {
-                if (snapshot.data == 0) {
+                if (!player.hasNext) {
                   return Container();
                 }
                 return Container(
@@ -96,9 +103,18 @@ class _ControllingAreaState extends State<ControllingArea>
                     builder: (context, snapshot) {
                       return ListTile(
                         leading: IconButton(
-                          icon: Icon(Icons.favorite_outline),
-                          onPressed: () {},
-                        ),
+                            onPressed: () => fav(),
+                            icon: ValueListenableBuilder<Box<dynamic>>(
+                                valueListenable: favList.listenable(),
+                                builder: (context, snapshot, child) {
+                                  var l = snapshot.values.toList();
+                                  return Icon(l.contains(player
+                                          .sequence[player.currentIndex]
+                                          .tag
+                                          .path)
+                                      ? Icons.favorite
+                                      : Icons.favorite_outline);
+                                })),
                         title: Text(
                           player.sequence[snapshot.data].tag.title,
                           textAlign: TextAlign.center,
@@ -116,7 +132,7 @@ class _ControllingAreaState extends State<ControllingArea>
                         ),
                         trailing: IconButton(
                           icon: Icon(Icons.more_vert),
-                          onPressed: () {},
+                          onPressed: () => MusicDatabase().printFav(),
                         ),
                       );
                     }),
@@ -260,6 +276,10 @@ class _ControllingAreaState extends State<ControllingArea>
         ],
       ),
     );
+  }
+
+  void fav() async {
+    await MusicDatabase().fav();
   }
 
   String _printDuration(Duration duration) {

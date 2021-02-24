@@ -1,8 +1,9 @@
 import 'dart:ui';
 import 'dart:async';
+import 'package:Ruminate/models/data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:hive/hive.dart';
 import 'package:Ruminate/utils/audio_service.dart';
 import 'package:Ruminate/utils/thumbnail_manager.dart';
 
@@ -10,7 +11,9 @@ import 'controllingArea.dart';
 import 'song_slider.dart';
 
 class CurrentPlayingPage extends StatefulWidget {
-  CurrentPlayingPage({Key key}) : super(key: key);
+  CurrentPlayingPage({Key key, @required this.dataBox}) : super(key: key);
+
+  Box<DataModel> dataBox;
 
   @override
   _CurrentPlayingPageState createState() => _CurrentPlayingPageState();
@@ -46,7 +49,7 @@ class _CurrentPlayingPageState extends State<CurrentPlayingPage> {
       child: Stack(
         children: [
           blurBackground(),
-          ControllingArea(),
+          ControllingArea(dataBox: widget.dataBox,),
           SongSlider(),
         ],
       ),

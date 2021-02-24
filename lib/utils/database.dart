@@ -6,13 +6,14 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart';
 import '../main.dart';
+import 'audio_service.dart';
 
 class MusicDatabase {
   Box<DataModel> dataBox = Hive.box<DataModel>("data");
   final tagger = new Audiotagger();
   List<String> storage = [];
   List<String> excluded = [
-    // "/storage/emulated/0/",
+    "/storage/emulated/0/",
     "/WhatsApp/Media/",
     "/Android/data/",
     "SoundRecord",
@@ -24,9 +25,7 @@ class MusicDatabase {
       Directory dir = Directory(storagePath.path.split('Android')[0]);
       getFiles(dir);
       storage.add(dir.path);
-      // print(dir);
     }
-    // print("---------------> Length");
     // print(dataBox.clear());
   }
 
@@ -88,7 +87,6 @@ class MusicDatabase {
       fTitle: getfolder(File(path).parent.path),
       createdAt: await File(path).lastModified(),
       complete: map['title'] == "" ? true : false,
-      fav: false,
     );
     dataBox.add(data);
   }
@@ -105,9 +103,11 @@ class MusicDatabase {
   }
 
   printHive() {
+    List<DataModel> songs = dataBox.values.toList().cast<DataModel>();
     if (dataBox.isNotEmpty) {
-      for (DataModel entity in dataBox.values) {
-        print(" -->${entity.path} ${entity.title} \n");
+      songs.sort((a, b) => a.title.compareTo(b.title));
+      for (DataModel entity in songs) {
+        print(" -->${entity.album} ${entity.title} \n");
       }
     }
   }
@@ -118,6 +118,22 @@ class MusicDatabase {
       Image image = decodeImage(bytes);
       Image thumbS = copyResize(image, width: 300);
       await thumb.put(path.hashCode, encodePng(thumbS));
+    }
+  }
+
+  Future<void> fav() async {
+    String path = player.sequence[player.currentIndex].tag.path;
+    List f = favList.values.toList();
+    if (!f.contains(path)) {
+      await favList.add(path);
+    } else {
+      await favList.deleteAt(f.indexOf(path));
+    }
+  }
+
+  printFav() {
+    for (String s in favList.values.toList()) {
+      print(s);
     }
   }
 }

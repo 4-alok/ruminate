@@ -1,3 +1,4 @@
+import 'package:Ruminate/main.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -31,38 +32,28 @@ class _MusicListPageState extends State<MusicListPage> {
         }
         List<DataModel> data = items.values.toList().cast<DataModel>();
 
-        // data.sort((a, b) => b.createdAt.compareTo(a.createdAt));
         return ValueListenableBuilder<Sorting>(
             valueListenable: sorting,
             builder: (context, snapshot, child) {
-              if (snapshot == Sorting.date) {
-                data.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-              } else if (snapshot == Sorting.album) {
-                data.sort((a, b) => a.album.compareTo(b.album));
-              } else if (snapshot == Sorting.artist) {
-                data.sort((a, b) => a.artist.compareTo(b.artist));
-              } else if (snapshot == Sorting.name) {
-                data.sort((a, b) => a.title.compareTo(b.title));
-              } else if (snapshot == Sorting.fav) {
-                // data.sort((a, b) => a.title.compareTo(b.title));
-              } else {
-                data.sort((a, b) => a.title.compareTo(b.title));
-              }
+              List<DataModel> onScreenList = sort(data, snapshot);
               return ScrollBarControl(
                 controller: _scrollController,
                 child: ListView.builder(
                   physics: BouncingScrollPhysics(),
                   controller: _scrollController,
-                  itemCount: data.length,
+                  itemCount: onScreenList.length,
                   itemBuilder: (_, i) {
                     return musicTile(
                         context,
-                        data[i].complete,
-                        data[i].path.hashCode,
-                        data[i].title == "" ? data[i].path : data[i].title,
-                        data[i].artist == '' ? "<unknown>" : data[i].artist,
-                        () {
-                      initPlayList(data, i);
+                        onScreenList[i].complete,
+                        onScreenList[i].path.hashCode,
+                        onScreenList[i].title == ""
+                            ? onScreenList[i].path
+                            : onScreenList[i].title,
+                        onScreenList[i].artist == ''
+                            ? "<unknown>"
+                            : onScreenList[i].artist, () {
+                      initPlayList(onScreenList, i);
                     });
                   },
                 ),
@@ -70,5 +61,33 @@ class _MusicListPageState extends State<MusicListPage> {
             });
       },
     );
+  }
+
+  List<DataModel> sort(List<DataModel> data, Sorting snapshot) {
+    if (snapshot == Sorting.date) {
+      data.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return data;
+    } else if (snapshot == Sorting.album) {
+      data.sort((a, b) => a.album.compareTo(b.album));
+      return data;
+    } else if (snapshot == Sorting.artist) {
+      data.sort((a, b) => a.artist.compareTo(b.artist));
+      return data;
+    } else if (snapshot == Sorting.name) {
+      data.sort((a, b) => a.title.compareTo(b.title));
+      return data;
+    } else if (snapshot == Sorting.fav) {
+      List l = favList.values.toList();
+      List<DataModel> k = [];
+      for (DataModel s in data) {
+        if (l.contains(s.path)) {
+          k.add(s);
+        }
+      }
+      return k;
+    } else {
+      data.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return data;
+    }
   }
 }

@@ -27,8 +27,6 @@ class DataModel {
   final int playCount;
   @HiveField(11)
   final bool complete;
-  @HiveField(12)
-  final bool fav;
 
   DataModel(
       {this.path,
@@ -42,6 +40,5 @@ class DataModel {
       this.createdAt,
       this.duration,
       this.playCount,
-      this.complete,
-      this.fav});
+      this.complete,});
 }

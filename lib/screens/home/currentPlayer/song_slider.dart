@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:Ruminate/utils/audio_service.dart';
-import 'package:Ruminate/utils/thumbnail_manager.dart';
 import 'package:audiotagger/audiotagger.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -58,6 +57,7 @@ class _SongSliderState extends State<SongSlider> {
                 stream: player.sequenceStream,
                 builder: (context, snapshot) {
                   return PageView.builder(
+                    physics: BouncingScrollPhysics(),
                     onPageChanged: (val) async {
                       if (val == player.currentIndex + 1) {
                         await player.seekToNext();

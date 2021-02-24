@@ -8,12 +8,14 @@ import 'screens/intro_page/intro.dart';
 
 Box settingBox;
 LazyBox thumb;
+Box favList;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final doc = await getApplicationDocumentsDirectory();
   Hive.init(doc.path);
   Hive.registerAdapter(DataModelAdapter());
   settingBox = await Hive.openBox("setting");
+  favList = await Hive.openBox("fav");
   await Hive.openBox<DataModel>("data");
   thumb = await Hive.openLazyBox('thumbnail');
   runApp(MyApp());

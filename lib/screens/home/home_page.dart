@@ -203,7 +203,9 @@ class _HomePageState extends State<HomePage>
                         );
                       } else {
                         // _panelController.show();
-                        return CurrentPlayingPage();
+                        return CurrentPlayingPage(
+                          dataBox: dataBox,
+                        );
                       }
                     }));
           }),

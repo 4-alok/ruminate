@@ -23,14 +23,13 @@ class DataModelAdapter extends TypeAdapter<DataModel> {
       duration: fields[9] as String,
       playCount: fields[10] as int,
       complete: fields[11] as bool,
-      fav: fields[12] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, DataModel obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.path)
       ..writeByte(1)
@@ -54,9 +53,7 @@ class DataModelAdapter extends TypeAdapter<DataModel> {
       ..writeByte(10)
       ..write(obj.playCount)
       ..writeByte(11)
-      ..write(obj.complete)
-      ..writeByte(12)
-      ..write(obj.fav);
+      ..write(obj.complete);
   }
 
   @override
