@@ -16,9 +16,9 @@ List<Widget> appbar(BuildContext context) {
             icon: Icon(Icons.sort),
             itemBuilder: (BuildContext bc) => [
               PopupMenuItem(child: Text("Name"), value: Sorting.name),
-              PopupMenuItem(child: Text("Artist"), value: Sorting.artist),
-              PopupMenuItem(child: Text("Album"), value: Sorting.album),
-              PopupMenuItem(child: Text("Date"), value: Sorting.date),
+              // PopupMenuItem(child: Text("Artist"), value: Sorting.artist),
+              // PopupMenuItem(child: Text("Album"), value: Sorting.album),
+              PopupMenuItem(child: Text("Newly Added"), value: Sorting.date),
               PopupMenuItem(child: Text("Favorites"), value: Sorting.fav),
             ],
             // color: Colors.black,

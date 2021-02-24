@@ -1,34 +1,45 @@
 import 'package:Ruminate/models/data_model.dart';
 import 'package:Ruminate/models/model.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:audio_session/audio_session.dart';
 
 AudioPlayer player;
 
-enum Sorting { name, date, artist, album, fav }
+enum Sorting { name, date, fav }
 
-initPlayList(List<DataModel> songs, int i) async {
-  await player.setAudioSource(
-    ConcatenatingAudioSource(
-        useLazyPreparation: true,
-        children: songs
-            .map((e) => AudioSource.uri(Uri.file(e.path, windows: true),
-                tag: AudioMetadata(
-                  path: e.path,
-                  title: e.title,
-                  artist: e.artist,
-                )))
-            .toList()),
-    initialIndex: i,
-    initialPosition: Duration.zero,
-  );
+List<AudioSource> playlist = [];
+
+void setPlayList(List<DataModel> songs) {
+  playlist = songs
+      .map((e) => AudioSource.uri(Uri.file(e.path, windows: true),
+          tag: AudioMetadata(
+            path: e.path,
+            title: e.title,
+            artist: e.artist,
+          )))
+      .toList();
+}
+
+void playAudio(int i) async {
+  try {
+    await player.setAudioSource(
+      ConcatenatingAudioSource(useLazyPreparation: true, children: playlist),
+      initialIndex: i,
+      initialPosition: Duration.zero,
+    );
+  } on PlayerException catch (e) {
+    print("Error message: ${e.message}");
+  } on PlayerInterruptedException catch (e) {
+    print("Connection aborted: ${e.message}");
+  } catch (e) {
+    print(e);
+  }
   await player.play();
 }
 
 initAudio() async {
   player = AudioPlayer();
-  final session = await AudioSession.instance;
-  await session.configure(AudioSessionConfiguration.speech());
+  // final session = await AudioSession.instance;
+  // await session.configure(AudioSessionConfiguration.speech());
 }
 
 disposeAudio() {

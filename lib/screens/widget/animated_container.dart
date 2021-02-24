@@ -41,7 +41,8 @@ class OpenContainerWidget extends StatelessWidget {
           itemBuilder: (context, index) {
             return ListTile(
               onTap: () {
-                initPlayList(songs, index);
+                setPlayList(songs);
+                playAudio(index);
               },
               leading: songs[index].complete == true
                   ? CircleAvatar(child: Icon(Icons.music_note))

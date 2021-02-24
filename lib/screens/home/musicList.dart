@@ -53,7 +53,8 @@ class _MusicListPageState extends State<MusicListPage> {
                         onScreenList[i].artist == ''
                             ? "<unknown>"
                             : onScreenList[i].artist, () {
-                      initPlayList(onScreenList, i);
+                      setPlayList(onScreenList);
+                      playAudio(i);
                     });
                   },
                 ),
@@ -67,24 +68,19 @@ class _MusicListPageState extends State<MusicListPage> {
     if (snapshot == Sorting.date) {
       data.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       return data;
-    } else if (snapshot == Sorting.album) {
-      data.sort((a, b) => a.album.compareTo(b.album));
-      return data;
-    } else if (snapshot == Sorting.artist) {
-      data.sort((a, b) => a.artist.compareTo(b.artist));
-      return data;
     } else if (snapshot == Sorting.name) {
       data.sort((a, b) => a.title.compareTo(b.title));
       return data;
     } else if (snapshot == Sorting.fav) {
       List l = favList.values.toList();
-      List<DataModel> k = [];
-      for (DataModel s in data) {
-        if (l.contains(s.path)) {
-          k.add(s);
-        }
-      }
-      return k;
+      // List<DataModel> k = [];
+      return data.where((element) => l.contains(element.path)).toList();
+      // for (DataModel s in data) {
+      //   if (l.contains(s.path)) {
+      //     k.add(s);
+      //   }
+      // }
+      // return k;
     } else {
       data.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       return data;

@@ -46,7 +46,8 @@ class _AlbumSongsPageState extends State<AlbumSongsPage> {
                 "Album: " +
                 widget.album.songs[index].album),
                 onTap: (){
-                  initPlayList(widget.album.songs, index);
+                  setPlayList(widget.album.songs);
+                  playAudio(index);
                 },
           ),
         );
