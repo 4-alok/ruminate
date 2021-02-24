@@ -28,7 +28,7 @@ List<Widget> appbar(BuildContext context) {
           ),
           IconButton(
               icon: Icon(Icons.search), onPressed: () => _openSearch(context)),
-          IconButton(icon: Icon(Icons.settings), onPressed: () => _openSetting),
+          // IconButton(icon: Icon(Icons.settings), onPressed: () => _openSetting),
         ],
       ),
     ),
@@ -40,7 +40,7 @@ List<Widget> appbar(BuildContext context) {
         children: [
           IconButton(
               icon: Icon(Icons.search), onPressed: () => _openSearch(context)),
-          IconButton(icon: Icon(Icons.settings), onPressed: () => _openSetting),
+          // IconButton(icon: Icon(Icons.settings), onPressed: () => _openSetting),
         ],
       ),
     ),
@@ -52,7 +52,7 @@ List<Widget> appbar(BuildContext context) {
         children: [
           IconButton(
               icon: Icon(Icons.search), onPressed: () => _openSearch(context)),
-          IconButton(icon: Icon(Icons.settings), onPressed: () => _openSetting),
+          // IconButton(icon: Icon(Icons.settings), onPressed: () => _openSetting),
         ],
       ),
     ),
@@ -64,7 +64,7 @@ List<Widget> appbar(BuildContext context) {
         children: [
           IconButton(
               icon: Icon(Icons.search), onPressed: () => _openSearch(context)),
-          IconButton(icon: Icon(Icons.settings), onPressed: () => _openSetting),
+          // IconButton(icon: Icon(Icons.settings), onPressed: () => _openSetting),
         ],
       ),
     ),

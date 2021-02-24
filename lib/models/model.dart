@@ -11,7 +11,7 @@ class FolderModel {
   String folder;
   String title;
   List<DataModel> songs;
-  FolderModel({this.folder,this.title, this.songs});
+  FolderModel({this.folder, this.title, this.songs});
 }
 
 class ArtistModel {
@@ -27,4 +27,31 @@ class AudioMetadata {
   String artist;
 
   AudioMetadata({this.path, this.title, this.artist});
+}
+
+class AudioDetails {
+  String discNumber;
+  String discTotal;
+  String trackNo;
+  String artist;
+  String album;
+  String albumArtist;
+  String genre;
+  String comment;
+  String title;
+  String lyrics;
+  String year;
+
+  AudioDetails(
+      {this.discNumber,
+      this.discTotal,
+      this.trackNo,
+      this.artist,
+      this.album,
+      this.albumArtist,
+      this.genre,
+      this.comment,
+      this.title,
+      this.lyrics,
+      this.year});
 }

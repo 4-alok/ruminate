@@ -22,7 +22,8 @@ void setPlayList(List<DataModel> songs) {
 void playAudio(int i) async {
   try {
     await player.setAudioSource(
-      ConcatenatingAudioSource(useLazyPreparation: true, children: playlist),
+      ConcatenatingAudioSource(
+          useLazyPreparation: true, children: [...playlist]),
       initialIndex: i,
       initialPosition: Duration.zero,
     );

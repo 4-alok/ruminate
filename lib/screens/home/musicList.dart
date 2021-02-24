@@ -52,7 +52,8 @@ class _MusicListPageState extends State<MusicListPage> {
                             : onScreenList[i].title,
                         onScreenList[i].artist == ''
                             ? "<unknown>"
-                            : onScreenList[i].artist, () {
+                            : onScreenList[i].artist,
+                        onScreenList[i].path, () {
                       setPlayList(onScreenList);
                       playAudio(i);
                     });
@@ -73,14 +74,7 @@ class _MusicListPageState extends State<MusicListPage> {
       return data;
     } else if (snapshot == Sorting.fav) {
       List l = favList.values.toList();
-      // List<DataModel> k = [];
       return data.where((element) => l.contains(element.path)).toList();
-      // for (DataModel s in data) {
-      //   if (l.contains(s.path)) {
-      //     k.add(s);
-      //   }
-      // }
-      // return k;
     } else {
       data.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       return data;

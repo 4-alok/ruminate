@@ -61,62 +61,64 @@ class _AlbumListPageState extends State<AlbumListPage> {
 
         return Container(
             child: ScrollBarControl(
+          controller: _scrollController,
+          child: GridView.builder(
               controller: _scrollController,
-                          child: GridView.builder(
-                controller: _scrollController,
-                physics: BouncingScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 0,
-                    mainAxisSpacing: 0,
+              physics: BouncingScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 0,
+                mainAxisSpacing: 0,
+              ),
+              itemCount: album.length,
+              itemBuilder: (context, i) {
+                return Card(
+                  color: Colors.grey[900],
+                  child: OpenContainer(
+                    closedColor: Colors.black,
+                    openColor: Colors.black,
+                    transitionDuration: Duration(milliseconds: 400),
+                    closedBuilder: (context, action) => Stack(
+                      children: [
+                        Center(
+                            child: Container(
+                                child: Thumbnail().imageThumbnail(
+                                    album[i].songs[0].path.hashCode,
+                                    BoxFit.cover))
+                            // child: Image.file(''),
+                            ),
+                        Container(
+                            padding: EdgeInsets.only(bottom: 10),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                  colors: [
+                                    Colors.transparent,
+                                    Colors.black.withOpacity(.8)
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  stops: [0.5, 0.9]),
+                            ),
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 5, right: 5),
+                              child: Text(
+                                album[i].albumName == ''
+                                    ? '<unknown>'
+                                    : "${album[i].albumName}",
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            )),
+                      ],
+                    ),
+                    openBuilder: (context, action) => AlbumSongsPage(
+                      album: album[i],
+                    ),
                   ),
-                  itemCount: album.length,
-                  itemBuilder: (context, i) {
-                    return Card(
-                      color: Colors.grey[900],
-                      child: OpenContainer(
-                        closedColor: Colors.black,
-                        openColor: Colors.black,
-                        transitionDuration: Duration(milliseconds: 400),
-                        closedBuilder: (context, action) => Stack(
-                          children: [
-                            Center(
-                                child: Container(
-                                    child: Thumbnail().imageThumbnail(
-                                        album[i].songs[0].path.hashCode,
-                                        BoxFit.cover))
-                                // child: Image.file(''),
-                                ),
-                            Container(
-                                padding: EdgeInsets.only(bottom: 10),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                      colors: [Colors.transparent, Colors.black],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      stops: [0.5, 0.9]),
-                                ),
-                                alignment: Alignment.bottomCenter,
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 5, right: 5),
-                                  child: Text(
-                                    album[i].albumName == ''
-                                        ? '<unknown>'
-                                        : "${album[i].albumName}",
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                )),
-                          ],
-                        ),
-                        openBuilder: (context, action) => AlbumSongsPage(
-                          album: album[i],
-                        ),
-                      ),
-                    );
-                  }),
-            ));
+                );
+              }),
+        ));
       },
     );
   }

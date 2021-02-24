@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:Ruminate/main.dart';
 import 'package:Ruminate/models/data_model.dart';
+import 'package:Ruminate/screens/widget/song_widget.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:Ruminate/screens/home/currentPlayer/seekBar.dart';
 import 'package:Ruminate/utils/database.dart';
@@ -132,7 +133,8 @@ class _ControllingAreaState extends State<ControllingArea>
                         ),
                         trailing: IconButton(
                           icon: Icon(Icons.more_vert),
-                          onPressed: () => MusicDatabase().printFav(),
+                          onPressed: () => showDiaglog(
+                              context, player.sequence[snapshot.data].tag.path),
                         ),
                       );
                     }),
