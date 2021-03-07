@@ -1,9 +1,5 @@
-import 'package:Ruminate/models/model.dart';
-import 'package:Ruminate/utils/audio_service.dart';
 import 'package:Ruminate/utils/thumbnail_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
-
 import 'song_details.dart';
 
 Widget musicTile(BuildContext context, bool icon, int id, String title,
