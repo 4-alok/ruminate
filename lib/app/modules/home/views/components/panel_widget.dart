@@ -14,24 +14,33 @@ class PanelWidget extends StatelessWidget {
       color: Colors.amberAccent,
       child: Column(
         children: [
-          toolBar(),
+          toolBar(context),
           Container(),
         ],
       ),
     );
   }
 
-  Container toolBar() {
-    return Container(
-      color: Colors.blueAccent,
-      padding: EdgeInsets.only(left: 10, right: 10),
-      height: kToolbarHeight,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          openCloseIcon(),
-        ],
-      ),
+  Widget toolBar(BuildContext context) {
+    return Column(
+      children: [
+        Obx(() => Container(
+              height: MediaQuery.of(context).padding.top *
+                  homeController.panel.value,
+              color: Colors.red,
+            )),
+        Container(
+          color: Colors.blueAccent,
+          padding: EdgeInsets.only(left: 10, right: 10),
+          height: kToolbarHeight,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              openCloseIcon(),
+            ],
+          ),
+        ),
+      ],
     );
   }
 

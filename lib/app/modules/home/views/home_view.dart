@@ -19,7 +19,6 @@ class HomeView extends GetView<HomeController> {
         minHeight: kToolbarHeight,
         maxHeight: MediaQuery.of(context).size.height,
         body: BodyWidget(),
-        // collapsed: CollapsedWidget(),
         panel: PanelWidget(),
       ),
     );

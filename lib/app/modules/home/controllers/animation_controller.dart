@@ -17,15 +17,18 @@ class HomeAnimationController extends GetxController
     super.onInit();
 
     Get.find<HomeController>().panel.listen((val) {
-      if (val > .5) {
+      if (val > 0.5) {
         animationController.forward();
       } else {
         animationController.reverse();
       }
     });
 
-    rotateAnimation = Tween<double>(begin: 0, end: math.pi).animate(
-        CurvedAnimation(parent: animationController, curve: Curves.easeInOut));
+    rotateAnimation =
+        Tween<double>(begin: 0, end: math.pi).animate(CurvedAnimation(
+      parent: animationController,
+      curve: Curves.easeInOut,
+    ));
   }
 
   @override

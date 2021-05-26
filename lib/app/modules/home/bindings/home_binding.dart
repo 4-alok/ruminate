@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:ruminate/app/modules/home/controllers/animation_controller.dart';
-
+import 'package:ruminate/app/modules/home/controllers/tab_controller.dart';
 import '../controllers/home_controller.dart';
 
 class HomeBinding extends Bindings {
@@ -11,6 +11,10 @@ class HomeBinding extends Bindings {
     );
     Get.lazyPut<HomeAnimationController>(
       () => HomeAnimationController(),
+    );
+
+    Get.lazyPut<HomeTabController>(
+      () => HomeTabController(),
     );
   }
 }
