@@ -102,6 +102,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.1.4"
+  id3:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: bcc12dbbb1e8056a76d20fb9c871426772ba6386
+      url: "https://github.com/4-alok/id3.git"
+    source: git
+    version: "0.1.8"
   image:
     dependency: transitive
     description:
