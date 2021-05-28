@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ruminate/app/modules/home/controllers/home_controller.dart';
 import 'package:ruminate/app/modules/home/controllers/tab_controller.dart';
 
 class BodyWidget extends StatelessWidget {
   final HomeTabController tabController = Get.find<HomeTabController>();
+  final HomeController controller = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -11,6 +13,12 @@ class BodyWidget extends StatelessWidget {
       length: tabController.tabList.length,
       child: Scaffold(
         appBar: AppBar(
+          actions: [
+            IconButton(
+              onPressed: () => controller.searchSong(),
+              icon: Icon(Icons.access_time),
+            )
+          ],
           elevation: 0,
           flexibleSpace: Container(
             alignment: Alignment.bottomLeft,
