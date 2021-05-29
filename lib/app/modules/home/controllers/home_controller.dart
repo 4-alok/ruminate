@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:ruminate/app/models/song_model.dart';
+import 'package:ruminate/app/utils/database_model.dart';
 import 'package:ruminate/app/utils/find_songs.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 

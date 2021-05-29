@@ -5,7 +5,8 @@ import 'dart:isolate';
 import 'package:get/get.dart';
 import 'package:id3/id3.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:ruminate/app/models/song_model.dart';
+
+import 'database_model.dart';
 
 class FindSong {
   Isolate? isolate;

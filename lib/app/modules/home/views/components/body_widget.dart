@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ruminate/app/modules/home/controllers/home_controller.dart';
 import 'package:ruminate/app/modules/home/controllers/tab_controller.dart';
+import 'package:ruminate/app/modules/home/views/page/album_page.dart';
+import 'package:ruminate/app/modules/home/views/page/artist_page.dart';
+import 'package:ruminate/app/modules/home/views/page/folder_page.dart';
+import 'package:ruminate/app/modules/home/views/page/home_page.dart';
+import 'package:ruminate/app/modules/home/views/page/music_page.dart';
 
 class BodyWidget extends StatelessWidget {
   final HomeTabController tabController = Get.find<HomeTabController>();
@@ -37,15 +42,13 @@ class BodyWidget extends StatelessWidget {
             child: TabBarView(
               physics: BouncingScrollPhysics(),
               controller: tabController.tabController,
-              children: tabController.tabList
-                  .map((e) => Container(
-                        child: Center(
-                            child: Text(
-                          e,
-                          style: Theme.of(context).textTheme.headline2,
-                        )),
-                      ))
-                  .toList(),
+              children: [
+                HomePage(tabController: tabController),
+                MusicPage(tabController: tabController),
+                AlbumPage(tabController: tabController),
+                ArtistPage(tabController: tabController),
+                FolderPage(tabController: tabController),
+              ],
             )),
       ),
     );

@@ -9,13 +9,17 @@ dependencies:
   get: 4.1.4
   path_provider: ^2.0.2
   sliding_up_panel: 2.0.0+1
-  id3:
-    path: /home/alok/Projects/Flutter/Release/id3
+  hive: ^2.0.4
+  hive_flutter: ^1.0.0
+  id3: 
+    git: https://github.com/4-alok/id3.git
   flutter: 
     sdk: flutter
 
 dev_dependencies: 
-  flutter_native_splash: ^0.3.0
+  hive_generator: ^1.1.0
+  build_runner: ^2.0.4
+  flutter_native_splash: ^1.1.8+4
   flutter_test: 
     sdk: flutter
 
