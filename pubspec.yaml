@@ -10,7 +10,7 @@ dependencies:
   path_provider: ^2.0.2
   sliding_up_panel: 2.0.0+1
   id3:
-    git: https://github.com/4-alok/id3.git
+    path: /home/alok/Projects/Flutter/Release/id3
   flutter: 
     sdk: flutter
 

@@ -119,11 +119,9 @@ packages:
   id3:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: bcc12dbbb1e8056a76d20fb9c871426772ba6386
-      url: "https://github.com/4-alok/id3.git"
-    source: git
+      path: "/home/alok/Projects/Flutter/Release/id3"
+      relative: false
+    source: path
     version: "0.1.8"
   image:
     dependency: transitive

@@ -1,25 +1,28 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 
 import 'package:get/get.dart';
 import 'package:id3/id3.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:ruminate/app/models/song_model.dart';
 
 class FindSong {
   Isolate? isolate;
   RxBool running = false.obs;
   ReceivePort? receivePort;
-  static List<String> songs = [];
+  static List<Song> songs = [];
 
-  void findSong() async {
+  Future<List<Song>> findSong() async {
     running.value = true;
     receivePort = ReceivePort();
     isolate = await Isolate.spawn(checkTimer, receivePort!.sendPort);
+    final Completer<List<Song>> completer = new Completer<List<Song>>();
     receivePort!.listen((data) {
+      completer.complete(data);
       stop();
-    }, onDone: () {
-      print("done!");
-    });
+    }, onDone: () {});
+    return completer.future;
   }
 
   static void checkTimer(SendPort sendPort) async {
@@ -27,8 +30,7 @@ class FindSong {
       Directory dir = await getApplicationDocumentsDirectory();
       searchMp3(dir.parent);
     }
-    print(songs.length);
-    sendPort.send('msg');
+    sendPort.send(songs);
   }
 
   static void searchMp3(Directory dir) async {
@@ -36,8 +38,7 @@ class FindSong {
         in dir.listSync(recursive: false, followLinks: false)) {
       if (e is File) {
         if (e.path.split('.').last.toLowerCase() == 'mp3') {
-          print(e.path);
-          songs.add(e.path);
+          songdDetails(e.path);
         }
       } else if (e is Directory) {
         searchMp3(e);
@@ -45,17 +46,36 @@ class FindSong {
     }
   }
 
-  void songdDetails() {
-    String path = '/home/alok/Music/Punjabi/Hor Nai - Billy X.mp3';
+  static void songdDetails(String path) {
     MP3Instance mp3instance = MP3Instance(path);
-    print(mp3instance.parseTagsSync());
-    if (mp3instance.parseTagsSync()) {
-      print(mp3instance.getMetaTags());
-      print(mp3instance.metaTags!['Title']);
-      print(mp3instance.metaTags!['Artist']);
-      print(mp3instance.metaTags!['Album']);
-      print(mp3instance.metaTags!['Year']);
-      print(mp3instance.metaTags!['Genre']);
+    try {
+      if (mp3instance.parseTagsSync()) {
+        songs.add(
+          Song(
+              path: path,
+              fileName: path.split('/').last.split('.').first,
+              title: mp3instance.metaTags!['Title'],
+              artist: mp3instance.metaTags!['Artist'],
+              album: mp3instance.metaTags!['Album'],
+              genre: mp3instance.metaTags!['Genre'],
+              composer: mp3instance.metaTags!['Composer'],
+              track: mp3instance.metaTags!['Track'],
+              year: mp3instance.metaTags!['Year']),
+        );
+      }
+    } catch (e) {
+      songs.add(
+        Song(
+            path: path,
+            fileName: path.split('/').last.split('.').first,
+            title: path.split('/').last.split('.').first,
+            artist: '',
+            album: '',
+            genre: '',
+            composer: '',
+            track: '',
+            year: ''),
+      );
     }
   }
 

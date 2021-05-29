@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:ruminate/app/models/song_model.dart';
 import 'package:ruminate/app/utils/find_songs.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -15,8 +16,11 @@ class HomeController extends GetxController {
     super.onInit();
   }
 
-  // void searchSong() => FindSong().findSong();
-  void searchSong() => FindSong().songdDetails();
+  void searchSong() async {
+    List<Song> songs = await FindSong().findSong();
+    print(songs.length);
+  }
+  // void searchSong() => FindSong().songdDetails();
 
   void panelOpenClose() {
     if (!panelOpen.value) {
