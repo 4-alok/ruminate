@@ -23,7 +23,9 @@ class FindSong {
       completer.complete(data);
       stop();
     }, onDone: () {});
-    return completer.future;
+    List<Song> data = await completer.future;
+    data.sort((a, b) => a.title.compareTo(b.title));
+    return data;
   }
 
   static void checkTimer(SendPort sendPort) async {
@@ -31,6 +33,7 @@ class FindSong {
       Directory dir = await getApplicationDocumentsDirectory();
       searchMp3(dir.parent);
     }
+    if (Platform.isAndroid) {}
     sendPort.send(songs);
   }
 

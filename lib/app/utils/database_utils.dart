@@ -20,7 +20,8 @@ class SongDatabase {
         track: s.track,
         year: s.year,
       );
-      if (!data.contains(song)) {
+      if (data.where((element) => element.path == s.path).isEmpty) {
+        print(song.path);
         await dataBox.add(song);
       }
     }
@@ -28,7 +29,8 @@ class SongDatabase {
 
   Future<void> forceUpdateDatabase() async {
     dataBox.clear();
-    for (Song s in await FindSong().findSong()) {
+    for (Song s in (await FindSong().findSong())) {
+      print(s.path);
       await dataBox.add(Song(
         path: s.path,
         fileName: s.fileName,

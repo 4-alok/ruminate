@@ -18,12 +18,12 @@ class BodyWidget extends StatelessWidget {
       length: tabController.tabList.length,
       child: Scaffold(
         appBar: AppBar(
-          actions: [
-            IconButton(
-              onPressed: () => controller.searchSong(),
-              icon: Icon(Icons.access_time),
-            )
-          ],
+          // actions: [
+          //   IconButton(
+          //     onPressed: () => controller.searchSong(),
+          //     icon: Icon(Icons.access_time),
+          //   )
+          // ],
           elevation: 0,
           flexibleSpace: Container(
             alignment: Alignment.bottomLeft,
@@ -44,7 +44,7 @@ class BodyWidget extends StatelessWidget {
               controller: tabController.tabController,
               children: [
                 HomePage(tabController: tabController),
-                MusicPage(tabController: tabController),
+                MusicPage(),
                 AlbumPage(tabController: tabController),
                 ArtistPage(tabController: tabController),
                 FolderPage(tabController: tabController),
