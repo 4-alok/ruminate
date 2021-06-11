@@ -7,20 +7,32 @@ import 'package:ruminate/app/modules/home/views/page/artist_page.dart';
 import 'package:ruminate/app/modules/home/views/page/folder_page.dart';
 import 'package:ruminate/app/modules/home/views/page/home_page.dart';
 import 'package:ruminate/app/modules/home/views/page/music_page.dart';
+import 'package:ruminate/app/modules/home/views/page/test_page.dart';
 
 class BodyWidget extends StatelessWidget {
   final HomeTabController tabController = Get.find<HomeTabController>();
-  final HomeController controller = Get.find<HomeController>();
+  // final HomeController controller = Get.find<HomeController>();
+          //   IconButton(
+          //     onPressed: () => controller.clearDatabase(),
+          //     icon: Icon(Icons.access_time),
+          //   )
+          // ],
+          //   IconButton(
+          //     onPressed: () => controller.clearDatabase(),
+          //     icon: Icon(Icons.access_time),
+          //   )
+          // ],
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
+      initialIndex: 1,
       length: tabController.tabList.length,
       child: Scaffold(
         appBar: AppBar(
           // actions: [
           //   IconButton(
-          //     onPressed: () => controller.searchSong(),
+          //     onPressed: () => controller.clearDatabase(),
           //     icon: Icon(Icons.access_time),
           //   )
           // ],
@@ -48,6 +60,7 @@ class BodyWidget extends StatelessWidget {
                 AlbumPage(tabController: tabController),
                 ArtistPage(tabController: tabController),
                 FolderPage(tabController: tabController),
+                TestPage(),
               ],
             )),
       ),
@@ -70,3 +83,4 @@ class BodyWidget extends StatelessWidget {
     );
   }
 }
+

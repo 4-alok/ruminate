@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:hive/hive.dart';
 
 part 'database_model.g.dart';
@@ -34,3 +36,15 @@ class Song {
     required this.year,
   });
 }
+
+// @HiveType(typeId: 1)
+// class Thumbnail {
+//   @HiveField(0)
+//   final String path;
+//   @HiveField(1)
+//   final Uint8List image;
+//   Thumbnail({
+//     required this.path,
+//     required this.image,
+//   });
+// }

@@ -1,12 +1,34 @@
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import 'database_model.dart';
-import 'find_songs.dart';
+import 'package:ruminate/app/utils/database_model.dart';
+import 'package:ruminate/app/utils/find_songs.dart';
 
-class SongDatabase {
-  Box<Song> dataBox = Hive.box<Song>("songs_database");
+class SongDatabase extends GetxService {
+  Box<Song> songBox = Hive.box<Song>("songs_database");
+  late final LazyBox<dynamic> thumbnailsBox;
+
+  RxBool thumbnailsReady = false.obs;
+
+  @override
+  void onInit() {
+    initThumbnail();
+    super.onInit();
+  }
+
+  void initThumbnail() async {
+    thumbnailsBox = await Hive.openLazyBox('thumbnails');
+    thumbnailsReady.value = true;
+  }
+
+  @override
+  onClose() {
+    songBox.close();
+    thumbnailsBox.close();
+    super.onClose();
+  }
 
   Future<void> updateDatabase() async {
-    List<Song> data = dataBox.values.toList();
+    List<Song> data = songBox.values.toList();
     final List<Song> songs = await FindSong().findSong();
     for (Song s in songs) {
       final Song song = Song(
@@ -22,16 +44,20 @@ class SongDatabase {
       );
       if (data.where((element) => element.path == s.path).isEmpty) {
         print(song.path);
-        await dataBox.add(song);
+        await songBox.add(song);
       }
     }
   }
 
+  Future<void> clearDatabase() async {
+    songBox.clear();
+  }
+
   Future<void> forceUpdateDatabase() async {
-    dataBox.clear();
+    songBox.clear();
     for (Song s in (await FindSong().findSong())) {
       print(s.path);
-      await dataBox.add(Song(
+      await songBox.add(Song(
         path: s.path,
         fileName: s.fileName,
         title: s.title,
@@ -46,7 +72,7 @@ class SongDatabase {
   }
 
   Future<List<Song>> fetchSong() async {
-    List<Song> songs = dataBox.values.toList();
+    List<Song> songs = songBox.values.toList();
     return songs.length == 0 ? [] : songs;
   }
 }

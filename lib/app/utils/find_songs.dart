@@ -17,7 +17,7 @@ class FindSong {
   Future<List<Song>> findSong() async {
     running.value = true;
     receivePort = ReceivePort();
-    isolate = await Isolate.spawn(checkTimer, receivePort!.sendPort);
+    isolate = await Isolate.spawn(isolatedThread, receivePort!.sendPort);
     final Completer<List<Song>> completer = new Completer<List<Song>>();
     receivePort!.listen((data) {
       completer.complete(data);
@@ -28,12 +28,14 @@ class FindSong {
     return data;
   }
 
-  static void checkTimer(SendPort sendPort) async {
+  static void isolatedThread(SendPort sendPort) async {
     if (Platform.isLinux) {
       Directory dir = await getApplicationDocumentsDirectory();
       searchMp3(dir.parent);
     }
     if (Platform.isAndroid) {}
+    // print(thumbnailsBox.path);
+    // thumbnailsBox.close();
     sendPort.send(songs);
   }
 

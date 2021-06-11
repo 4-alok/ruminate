@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'app/routes/app_pages.dart';
+import 'app/services/database_service.dart';
 import 'app/utils/database_model.dart';
 
 void main() async {
@@ -21,6 +22,7 @@ void main() async {
 }
 
 Future<void> init() async {
+  Get.lazyPut(() => SongDatabase());
   await Hive.initFlutter();
   Hive.registerAdapter<Song>(SongAdapter());
   await Hive.openBox<Song>('songs_database');

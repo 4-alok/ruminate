@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:ruminate/app/utils/database_utils.dart';
+import 'package:ruminate/app/services/database_service.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class HomeController extends GetxController {
@@ -11,18 +11,9 @@ class HomeController extends GetxController {
 
   @override
   void onInit() {
-    SongDatabase().updateDatabase();
     panelController = new PanelController();
+    Get.find<SongDatabase>().updateDatabase();
     super.onInit();
-  }
-
-  // void searchSong() async {
-  //   // await SongDatabase().forceUpdateDatabase();
-  //   SongDatabase().updateDatabase();
-  // }
-
-  void updateDatabase() async {
-    await SongDatabase().forceUpdateDatabase();
   }
 
   void panelOpenClose() {
