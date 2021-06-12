@@ -26,7 +26,7 @@ class BodyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      initialIndex: 1,
+      initialIndex: 5,
       length: tabController.tabList.length,
       child: Scaffold(
         appBar: AppBar(
@@ -57,7 +57,7 @@ class BodyWidget extends StatelessWidget {
               children: [
                 HomePage(tabController: tabController),
                 MusicPage(),
-                AlbumPage(tabController: tabController),
+                AlbumPage(),
                 ArtistPage(tabController: tabController),
                 FolderPage(tabController: tabController),
                 TestPage(),

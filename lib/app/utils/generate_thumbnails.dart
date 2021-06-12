@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'dart:typed_data';
 import 'package:hive/hive.dart';
 import 'package:id3/id3.dart';
+import 'package:image/image.dart';
 import 'package:path_provider/path_provider.dart';
 import 'database_model.dart';
 
@@ -26,18 +27,24 @@ class GenerateThumbnails {
     Box<Song> songs = await Hive.openBox('songs_database');
     LazyBox<dynamic> thumbnails = await Hive.openLazyBox('thumbnails');
     for (Song song in songs.values) {
-      final Uint8List? image = await songsArt(song.path);
-      if (image != null) {
+      if ((await thumbnails.get(song.path.hashCode)) == null) {
+        final Uint8List? image = await getArt(song.path);
         try {
-          await thumbnails.put(song.path, image);
-          print("Added ${song.title}");
-        } catch (e) {}
+          final Image thumbnail = copyResize(decodeImage(image!)!, width: 250);
+          await thumbnails.put(song.path.hashCode, encodePng(thumbnail));
+          print('added ${song.title}');
+        } catch (e) {
+          await thumbnails.put(song.path.hashCode, null);
+          print('!!! added ${song.title}');
+        }
+      } else {
+        print("Already added ${song.title}");
       }
     }
     sendPort.send('');
   }
 
-  static Future<Uint8List?> songsArt(String path) async {
+  static Future<Uint8List?> getArt(String path) async {
     MP3Instance mp3instance = MP3Instance(path);
     try {
       if (mp3instance.parseTagsSync()) {

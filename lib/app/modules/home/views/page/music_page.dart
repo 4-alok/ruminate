@@ -3,10 +3,13 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ruminate/app/modules/home/controllers/home_controller.dart';
+import 'package:ruminate/app/services/database_service.dart';
 import 'package:ruminate/app/utils/database_model.dart';
 
 class MusicPage extends StatelessWidget {
   final HomeController controller = Get.find<HomeController>();
+  final SongDatabase database  = Get.find<SongDatabase>();
+
   @override
   Widget build(BuildContext context) {
     return Container(

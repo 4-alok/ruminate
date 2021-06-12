@@ -34,8 +34,6 @@ class FindSong {
       searchMp3(dir.parent);
     }
     if (Platform.isAndroid) {}
-    // print(thumbnailsBox.path);
-    // thumbnailsBox.close();
     sendPort.send(songs);
   }
 
