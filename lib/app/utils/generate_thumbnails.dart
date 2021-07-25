@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:isolate';
 import 'dart:typed_data';
 import 'package:hive/hive.dart';
@@ -45,10 +46,11 @@ class GenerateThumbnails {
   }
 
   static Future<Uint8List?> getArt(String path) async {
-    MP3Instance mp3instance = MP3Instance(path);
+    final List<int> mp3Bytes = File(path).readAsBytesSync();
+    final MP3Instance mp3instance = new MP3Instance(mp3Bytes);
     try {
       if (mp3instance.parseTagsSync()) {
-        return base64Decode(mp3instance.metaTags!['APIC']['base64']);
+        return base64Decode(mp3instance.metaTags['APIC']['base64']);
       }
     } catch (e) {}
     return null;

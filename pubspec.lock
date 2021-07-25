@@ -202,6 +202,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_audio_desktop:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "88d21e8077f52236c9f5639fe3fab73279271022"
+      url: "https://github.com/alexmercerind/flutter_audio_desktop.git"
+    source: git
+    version: "0.1.0"
   flutter_native_splash:
     dependency: "direct dev"
     description:
@@ -280,12 +289,10 @@ packages:
   id3:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "0f8efdf0cb4c20a0c3abc8cc9a52702f687424e0"
-      url: "https://github.com/4-alok/id3.git"
-    source: git
-    version: "0.1.8"
+      name: id3
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   image:
     dependency: transitive
     description:

@@ -11,8 +11,9 @@ dependencies:
   sliding_up_panel: 2.0.0+1
   hive: ^2.0.4
   hive_flutter: ^1.0.0
-  id3: 
-    git: https://github.com/4-alok/id3.git
+  id3: ^1.0.0
+  flutter_audio_desktop:
+    git: https://github.com/alexmercerind/flutter_audio_desktop.git
   flutter: 
     sdk: flutter
 

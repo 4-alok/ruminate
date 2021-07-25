@@ -4,7 +4,7 @@ import 'package:ruminate/app/services/database_service.dart';
 import 'package:ruminate/app/utils/generate_thumbnails.dart';
 
 class TestPage extends StatelessWidget {
-  final SongDatabase songDatabase = Get.find<SongDatabase>();
+  final SongDatabaseService songDatabase = Get.find<SongDatabaseService>();
   @override
   Widget build(BuildContext context) {
     return Container(

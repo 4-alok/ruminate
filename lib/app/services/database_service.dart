@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:ruminate/app/utils/database_model.dart';
 import 'package:ruminate/app/utils/find_songs.dart';
 
-class SongDatabase extends GetxService {
+class SongDatabaseService extends GetxService {
   Box<Song> songBox = Hive.box<Song>("songs_database");
   late final LazyBox<dynamic> thumbnailsBox;
 
@@ -28,7 +28,7 @@ class SongDatabase extends GetxService {
   }
 
   Future<void> updateDatabase() async {
-    List<Song> data = songBox.values.toList();
+    final List<Song> data = songBox.values.toList();
     final List<Song> songs = await FindSong().findSong();
     for (Song s in songs) {
       final Song song = Song(
@@ -49,9 +49,7 @@ class SongDatabase extends GetxService {
     }
   }
 
-  Future<void> clearDatabase() async {
-    songBox.clear();
-  }
+  Future<void> clearDatabase() async => await songBox.clear();
 
   Future<void> forceUpdateDatabase() async {
     songBox.clear();

@@ -51,20 +51,22 @@ class FindSong {
   }
 
   static void songdDetails(String path) {
-    MP3Instance mp3instance = MP3Instance(path);
+    final List<int> mp3Bytes = File(path).readAsBytesSync();
+    final MP3Instance mp3instance = new MP3Instance(mp3Bytes);
+    // MP3Instance mp3instance = MP3Instance(path);
     try {
       if (mp3instance.parseTagsSync()) {
         songs.add(
           Song(
               path: path,
               fileName: path.split('/').last.split('.').first,
-              title: mp3instance.metaTags!['Title'],
-              artist: mp3instance.metaTags!['Artist'],
-              album: mp3instance.metaTags!['Album'],
-              genre: mp3instance.metaTags!['Genre'],
-              composer: mp3instance.metaTags!['Composer'],
-              track: mp3instance.metaTags!['Track'],
-              year: mp3instance.metaTags!['Year']),
+              title: mp3instance.metaTags['Title'],
+              artist: mp3instance.metaTags['Artist'],
+              album: mp3instance.metaTags['Album'],
+              genre: mp3instance.metaTags['Genre'],
+              composer: mp3instance.metaTags['Composer'],
+              track: mp3instance.metaTags['Track'],
+              year: mp3instance.metaTags['Year']),
         );
       }
     } catch (e) {
