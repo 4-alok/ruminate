@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:ruminate/app/modules/home/controllers/home_controller.dart';
 import 'package:ruminate/app/modules/home/controllers/tab_controller.dart';
 import 'package:ruminate/app/modules/home/views/page/album_page.dart';
 import 'package:ruminate/app/modules/home/views/page/artist_page.dart';
@@ -12,16 +11,16 @@ import 'package:ruminate/app/modules/home/views/page/test_page.dart';
 class BodyWidget extends StatelessWidget {
   final HomeTabController tabController = Get.find<HomeTabController>();
   // final HomeController controller = Get.find<HomeController>();
-          //   IconButton(
-          //     onPressed: () => controller.clearDatabase(),
-          //     icon: Icon(Icons.access_time),
-          //   )
-          // ],
-          //   IconButton(
-          //     onPressed: () => controller.clearDatabase(),
-          //     icon: Icon(Icons.access_time),
-          //   )
-          // ],
+  //   IconButton(
+  //     onPressed: () => controller.clearDatabase(),
+  //     icon: Icon(Icons.access_time),
+  //   )
+  // ],
+  //   IconButton(
+  //     onPressed: () => controller.clearDatabase(),
+  //     icon: Icon(Icons.access_time),
+  //   )
+  // ],
 
   @override
   Widget build(BuildContext context) {
@@ -83,4 +82,3 @@ class BodyWidget extends StatelessWidget {
     );
   }
 }
-
