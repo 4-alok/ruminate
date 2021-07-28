@@ -72,7 +72,7 @@ class FindSong {
             _songdDetails(e.path);
           }
         } else if (e is Directory) {
-          if (!_excluded(e.path)) _searchMp3(e);
+          if (!_isExcludedDirectory(e.path)) _searchMp3(e);
         }
       }
     } catch (e) {}
@@ -120,7 +120,7 @@ class FindSong {
     }
   }
 
-  static bool _excluded(String path) {
+  static bool _isExcludedDirectory(String path) {
     if (Platform.isAndroid) {
       for (String p in Constant.excludeAndroidDir) {
         if (path.contains(p)) return true;

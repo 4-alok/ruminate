@@ -12,7 +12,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     panelController = new PanelController();
-    Get.find<SongDatabaseService>().updateDatabase();
+    // Get.find<SongDatabaseService>().updateDatabase();
     super.onInit();
   }
 
