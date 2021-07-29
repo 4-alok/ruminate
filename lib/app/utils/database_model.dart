@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-
 part 'database_model.g.dart';
 
 @HiveType(typeId: 0)
@@ -22,27 +21,19 @@ class Song {
   final String track;
   @HiveField(8)
   final String year;
-  Song({
-    required this.path,
-    required this.fileName,
-    required this.title,
-    required this.artist,
-    required this.album,
-    required this.genre,
-    required this.composer,
-    required this.track,
-    required this.year,
-  });
+  @HiveField(9)
+  final String duration;
+  @HiveField(10)
+  Song(
+      {required this.path,
+      required this.fileName,
+      required this.title,
+      required this.artist,
+      required this.album,
+      required this.genre,
+      required this.composer,
+      required this.track,
+      required this.year,
+      required this.duration,
+      });
 }
-
-// @HiveType(typeId: 1)
-// class Thumbnail {
-//   @HiveField(0)
-//   final String path;
-//   @HiveField(1)
-//   final Uint8List image;
-//   Thumbnail({
-//     required this.path,
-//     required this.image,
-//   });
-// }

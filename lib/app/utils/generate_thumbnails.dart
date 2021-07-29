@@ -4,7 +4,6 @@ import 'dart:isolate';
 import 'dart:typed_data';
 import 'package:hive/hive.dart';
 import 'package:id3/id3.dart';
-import 'package:image/image.dart';
 import 'package:ruminate/app/utils/storage_utils.dart';
 import 'database_model.dart';
 

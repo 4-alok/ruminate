@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:ruminate/app/services/database_service.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class HomeController extends GetxController {

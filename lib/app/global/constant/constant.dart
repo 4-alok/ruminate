@@ -11,5 +11,10 @@ class Constant {
 
   static final List<String> excludeLinuxDir = [
     "/.",
+    "sysroot",
+    "usr",
+    "sdk",
+    "Sdk",
+    "build",
   ];
 }
