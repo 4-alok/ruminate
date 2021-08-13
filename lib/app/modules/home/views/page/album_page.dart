@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:ruminate/app/global/widgets/thumbnail_image.dart';
 import 'package:ruminate/app/services/database_service.dart';
 
 class AlbumPage extends StatelessWidget {
@@ -17,8 +16,8 @@ class AlbumPage extends StatelessWidget {
             height: 200,
             color: Colors.green,
             padding: EdgeInsets.all(10),
-            child: ThumbnailImage.image(
-                songDatabase.songBox.values.toList()[index].path.hashCode),
+            // child: ThumbnailImage.image(
+            //     songDatabase.songBox.values.toList()[index].path.hashCode),
           ),
         ),
       ),

@@ -33,6 +33,7 @@ Future<void> init() async {
   Hive.registerAdapter<Song>(SongAdapter());
   await Hive.openBox<Song>('songs_database');
   Get.lazyPut(() => SongDatabaseService());
+  await SongDatabaseService().onInit();
 
   if (Platform.isLinux) {
     DartVLC.initialize();

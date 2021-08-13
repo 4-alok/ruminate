@@ -20,8 +20,7 @@ class FindSong {
     _receivePort!.listen((data) {
       completer.complete(data);
       stop();
-    }, onDone: () {
-    });
+    }, onDone: () {});
     return (await completer.future);
   }
 

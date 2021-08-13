@@ -24,16 +24,19 @@ class Song {
   @HiveField(9)
   final String duration;
   @HiveField(10)
-  Song(
-      {required this.path,
-      required this.fileName,
-      required this.title,
-      required this.artist,
-      required this.album,
-      required this.genre,
-      required this.composer,
-      required this.track,
-      required this.year,
-      required this.duration,
-      });
+  final String? artPath;
+
+  Song({
+    required this.path,
+    required this.fileName,
+    required this.title,
+    required this.artist,
+    required this.album,
+    required this.genre,
+    required this.composer,
+    required this.track,
+    required this.year,
+    required this.duration,
+    required this.artPath,
+  });
 }

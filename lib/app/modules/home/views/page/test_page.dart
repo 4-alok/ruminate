@@ -82,7 +82,11 @@ class TestPage extends StatelessWidget {
                 child: Text("Add"),
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  File file = File(
+                      '/home/alok/.cache/vlc/art/artistalbum/Billy%20X/Baadshah/art.jpg');
+                  print(file.existsSync());
+                },
                 child: Text("Length"),
               ),
               ElevatedButton(
