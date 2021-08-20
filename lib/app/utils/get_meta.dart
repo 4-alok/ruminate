@@ -12,8 +12,10 @@ class VlcMeta {
 
   Future<List<Song>> getSongsMetadata(List<String> songsPath) async {
     _receivePort = ReceivePort();
-    _isolate = await Isolate.spawn(_isolatedThread,
-        [_receivePort!.sendPort, songsPath, await StorageUtils.getDocDir()]);
+    _isolate = await Isolate.spawn(
+      _isolatedThread,
+      [_receivePort!.sendPort, songsPath, await StorageUtils.getDocDir()],
+    );
 
     final Completer<List<Song>> completer = new Completer<List<Song>>();
     _receivePort!.listen((data) {
@@ -43,8 +45,9 @@ class VlcMeta {
           Media.file(File(path), parse: true).metas;
 
       // copy art from vlc cache to ruminate cache folder
-      final String _path = _fixPath(data['artworkUrl']);
-      final thumbnailPath = thumbDir + r[1][i].toString().hashCode.toString();
+      final String _path = _pathPatch(data['artworkUrl']);
+      final thumbnailPath =
+          thumbDir + "/" + r[1][i].toString().hashCode.toString();
       try {
         if (_path != '/') await File(_path).copy(thumbnailPath);
       } catch (e) {
@@ -62,7 +65,7 @@ class VlcMeta {
           composer: data['composer'] ?? "",
           track: data["track"] ?? "",
           year: data["year"] ?? "",
-          duration: data["duration"] ?? "",
+          duration: _duration(data["duration"]),
           artPath: (_path == '/') ? "" : thumbnailPath,
         ),
       );
@@ -70,7 +73,19 @@ class VlcMeta {
     r[0].send(songs);
   }
 
-  static String _fixPath(String path) {
+  static String _duration(String? duration) {
+    if (duration == null) return "";
+    final Duration _duration = Duration(milliseconds: int.parse(duration));
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    final String twoDigitMinutes = twoDigits(_duration.inMinutes.remainder(60));
+    final String twoDigitSeconds = twoDigits(_duration.inSeconds.remainder(60));
+    final String twoDigitHour = twoDigits(_duration.inHours);
+    return (twoDigitHour == "00")
+        ? "$twoDigitMinutes:$twoDigitSeconds"
+        : "${twoDigits(_duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+  }
+
+  static String _pathPatch(String path) {
     String _path = '/' +
         path
             .split('///')

@@ -1,11 +1,16 @@
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:ruminate/app/global/models/album.dart';
 import 'package:ruminate/app/utils/get_meta.dart';
 import 'package:ruminate/app/utils/find_songs.dart';
 import 'package:ruminate/app/utils/database_model.dart';
+import 'package:ruminate/app/utils/sort_songs.dart';
 import 'package:ruminate/app/utils/storage_utils.dart';
 
+// root level function for compute
 List<Song> _sortSong(List<Song> newSongs) {
   newSongs
       .sort((a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()));
@@ -13,16 +18,29 @@ List<Song> _sortSong(List<Song> newSongs) {
 }
 
 class SongDatabaseService extends GetxService {
-  Box<Song> songBox = Hive.box<Song>("songs_database");
+  final Box<Song> songBox = Hive.box<Song>("songs_database");
+  final Box thumbnails = Hive.box("thumbnails");
 
   final RxBool refreshing = false.obs;
+  final RxList<Album> albums = <Album>[].obs;
   late final String thumbsPath;
+  late final Uint8List imgThumb;
 
   @override
   Future<void> onInit() async {
     super.onInit();
+    imgThumb = await _loadimg();
     thumbsPath = ((await StorageUtils.getDocDir()) + "/.thumbs");
+    albums.value = await SongSort.getAlbum(songBox.values.toList());
   }
+
+  Future<Uint8List> _loadimg() async {
+    final bytes = await rootBundle.load(r"assets/icon.png");
+    final Uint8List b = bytes.buffer.asUint8List();
+    return b;
+  }
+
+  
 
   Future<void> updateDatabase() async {
     refreshing.value = true;
@@ -64,6 +82,8 @@ class SongDatabaseService extends GetxService {
   @override
   onClose() {
     songBox.close();
+    refreshing.close();
+    albums.close();
     super.onClose();
   }
 

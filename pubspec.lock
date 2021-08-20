@@ -298,15 +298,8 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.0"
-  id3:
-    dependency: "direct main"
-    description:
-      name: id3
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   image:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: image
       url: "https://pub.dartlang.org"

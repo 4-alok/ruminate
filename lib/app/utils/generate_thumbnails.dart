@@ -1,70 +1,83 @@
-// import 'dart:convert';
-// import 'dart:io';
-// import 'dart:isolate';
-// import 'dart:typed_data';
-// import 'package:hive/hive.dart';
-// import 'package:id3/id3.dart';
-// import 'package:ruminate/app/utils/storage_utils.dart';
-// import 'database_model.dart';
+import 'dart:io';
+import 'dart:async';
+import 'dart:isolate';
+import 'dart:typed_data';
+import 'package:hive/hive.dart';
+import 'package:image/image.dart' as Img;
+import 'package:ruminate/app/global/models/album.dart';
+import 'package:ruminate/app/utils/database_model.dart';
 
-// class GenerateThumbnails {
-//   Isolate? isolate;
-//   bool running = false;
-//   ReceivePort? receivePort;
+class GenerateThumbnails {
+  Isolate? _isolate;
+  ReceivePort? _receivePort;
+  static Map<int, List<int>> imageMap = {};
 
-//   Future<void> generateThumbnails() async {
-//     running = true;
-//     receivePort = ReceivePort();
-//     String path = await StorageUtils.getDocDir();
-//     isolate =
-//         await Isolate.spawn(isolatedThread, [receivePort!.sendPort, path]);
-//     receivePort!.listen((data) {
-//       stop();
-//     }, onDone: () {});
-//   }
+  Future<Map<int, List<int>>> task(List<Song> songs) async {
+    _receivePort = ReceivePort();
+    _isolate = await Isolate.spawn(
+        _generateThumbnailsTask, [_receivePort!.sendPort, songs]);
 
-//   static void isolatedThread(List r) async {
-//     Hive.init(r.last);
-//     Hive.registerAdapter<Song>(SongAdapter());
-//     Box<Song> songs = await Hive.openBox('songs_database');
-//     LazyBox<dynamic> thumbnails = await Hive.openLazyBox('thumbnails');
-//     for (Song song in songs.values) {
-//       if ((await thumbnails.get(song.path.hashCode)) == null) {
-//         final Uint8List? image = await getArt(song.path);
-//         await thumbnails.put(song.path.hashCode, image ?? null);
-//         print("Added ${songs.path}");
-//         // try {
-//         //   final Image thumbnail = copyResize(decodeImage(image!)!, width: 250);
-//         //   await thumbnails.put(song.path.hashCode, encodePng(thumbnail));
-//         //   print('added ${song.title}');
-//         // } catch (e) {
-//         //   await thumbnails.put(song.path.hashCode, null);
-//         //   print('!!! added ${song.title}');
-//         // }
+    final completer = new Completer<Map<int, List<int>>>();
 
-//       } else {
-//         print("Already added ${song.title}");
-//       }
-//     }
-//     r.first.send('');
-//   }
+    _receivePort!.listen((data) {
+      completer.complete(data);
+      stop();
+    });
+    return (await completer.future);
+  }
 
-//   static Future<Uint8List?> getArt(String path) async {
-//     final List<int> mp3Bytes = File(path).readAsBytesSync();
-//     final MP3Instance mp3instance = new MP3Instance(mp3Bytes);
-//     try {
-//       if (mp3instance.parseTagsSync()) {
-//         return base64Decode(mp3instance.metaTags['APIC']['base64']);
-//       }
-//     } catch (e) {}
-//     return null;
-//   }
+  static void _generateThumbnailsTask(List r) async {
+    final songs = r[1] as List<Song>;
+    for (Song song in songs) {
+      if (song.artPath != null || song.artPath != "") {
+        try {
+          final data = await File(song.artPath!).readAsBytes();
+          final Img.Image thumbnail =
+              Img.copyResize(Img.decodeImage(data)!, width: 250);
 
-//   void stop() {
-//     if (isolate != null) {
-//       receivePort!.close();
-//       isolate!.kill(priority: Isolate.immediate);
-//       isolate = null;
-//     }
-//   }
-// }
+          imageMap.addAll({song.artPath.hashCode: Img.encodePng(thumbnail)});
+        } catch (e) {
+          print(e);
+        }
+      }
+    }
+    r[0].send(imageMap);
+  }
+
+  void stop() {
+    if (_isolate != null) {
+      _receivePort!.close();
+      _isolate!.kill(priority: Isolate.immediate);
+      _isolate = null;
+    }
+  }
+
+  static void generateThumbnails(List<Song> songs) async {
+    final Box thumbnails = Hive.box("thumbnails");
+
+    final data = await GenerateThumbnails().task(songs);
+    await thumbnails.putAll(data);
+    print("done");
+  }
+
+  void length() async {
+    final Box thumbnails = Hive.box("thumbnails");
+    print(thumbnails.length);
+  }
+
+  void clear() async {
+    final Box thumbnails = Hive.box("thumbnails");
+    await thumbnails.clear();
+  }
+
+  void test(List<Album> albums) async {
+    final Box thumbnails = Hive.box("thumbnails");
+
+    for (Album album in albums) {
+      final data = thumbnails.get(album.artPath.hashCode) as Uint8List?;
+      if (data != null) {
+        print(album.albumName);
+      }
+    }
+  }
+}

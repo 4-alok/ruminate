@@ -2,10 +2,13 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:dart_vlc/dart_vlc.dart';
+import 'package:ruminate/app/global/models/album.dart';
+import 'package:ruminate/app/utils/generate_thumbnails.dart';
 import 'package:ruminate/app/utils/get_meta.dart';
 import 'package:ruminate/app/utils/find_songs.dart';
 import 'package:ruminate/app/utils/database_model.dart';
 import 'package:ruminate/app/services/database_service.dart';
+import 'package:ruminate/app/utils/sort_songs.dart';
 
 class TestPage extends StatelessWidget {
   final SongDatabaseService songDatabase = Get.find<SongDatabaseService>();
@@ -94,6 +97,49 @@ class TestPage extends StatelessWidget {
                   songDatabase.clearDatabase();
                 },
                 child: Text("Clear"),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  final List<Song> k = songDatabase.songBox.values.toList();
+                  final x = await SongSort.getAlbum(k);
+                  for (Album y in x) {
+                    print(y.albumName);
+                  }
+                },
+                child: Text("album"),
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  final List<Song> k = songDatabase.songBox.values.toList();
+                  GenerateThumbnails.generateThumbnails(k);
+                },
+                child: Text("Add"),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  GenerateThumbnails().length();
+                },
+                child: Text("Length"),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  GenerateThumbnails().clear();
+                },
+                child: Text("Clear"),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  GenerateThumbnails().test(songDatabase.albums);
+                },
+                child: Text("Test"),
               ),
             ],
           )

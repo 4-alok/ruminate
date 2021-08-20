@@ -32,6 +32,7 @@ Future<void> init() async {
   Hive.init(await StorageUtils.getDocDir());
   Hive.registerAdapter<Song>(SongAdapter());
   await Hive.openBox<Song>('songs_database');
+  await Hive.openBox('thumbnails');
   Get.lazyPut(() => SongDatabaseService());
   await SongDatabaseService().onInit();
 
