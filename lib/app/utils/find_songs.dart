@@ -8,7 +8,8 @@ class FindSong {
   Isolate? _isolate;
   ReceivePort? _receivePort;
   static List<String> _songs = [];
-
+  
+  // return list of songs path  
   Future<List<String>> findSong() async {
     _receivePort = ReceivePort();
     final List<String> _storage =
@@ -24,11 +25,13 @@ class FindSong {
     return (await completer.future);
   }
 
+  // task running on isolated tread 
   static void _isolatedThread(List r) async {
     r[1].forEach((e) => _searchMp3(Directory(e)));
     r[0].send(_songs);
   }
 
+  // add song to list (isolated tread)
   static void _searchMp3(Directory dir) async {
     final List<FileSystemEntity> list =
         dir.listSync(recursive: false, followLinks: false);
@@ -43,6 +46,7 @@ class FindSong {
     }
   }
 
+  // isolated task completed 
   void stop() {
     if (_isolate != null) {
       _receivePort!.close();
