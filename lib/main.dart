@@ -12,7 +12,7 @@ import 'app/services/desktop_audio_services.dart';
 import 'app/services/player_controller.dart';
 import 'app/utils/database_model.dart';
 
-void main() async {
+Future<void> main() async {
   await init();
   runApp(
     GetMaterialApp(
@@ -39,7 +39,10 @@ Future<void> init() async {
   if (Platform.isLinux) {
     DartVLC.initialize();
     Get.lazyPut(() => DesktopAudioService());
+  } else {
   }
+  
+  
 
   Get.lazyPut(() => PlayerController());
 }
