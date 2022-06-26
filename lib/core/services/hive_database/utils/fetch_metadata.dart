@@ -4,9 +4,9 @@ import 'dart:isolate';
 import 'package:dart_vlc/dart_vlc.dart';
 import 'package:ruminate/core/di/di.dart';
 
+import '../../../../global/widgets/refresh_widget.dart';
 import '../model/song.dart';
 import '../hive_database_impl.dart';
-
 
 class FetchSongsMetadata {
   Isolate? _isolate;
@@ -14,13 +14,16 @@ class FetchSongsMetadata {
 
   Future<void> fetchToDatabase(List<String> list) async {
     _receivePort = ReceivePort();
-    _isolate = await Isolate.spawn(_isolatedThread, [
+    _isolate = await Isolate.spawn<List>(_isolatedThread, [
       _receivePort!.sendPort,
       list,
     ]);
-    
-    final songBox = locator<HiveDatabase>().datasource.songBox;
-    final thumbnailBox = locator<HiveDatabase>().datasource.thumbnailBox;
+    final hiveDatabase = locator<HiveDatabase>();
+    final songBox = hiveDatabase.datasource.songBox;
+    final thumbnailBox = hiveDatabase.datasource.thumbnailBox;
+    final songScanned = hiveDatabase.songScanned;
+    final refreshState = hiveDatabase.refreshState;
+    int count = 0;
 
     _receivePort!.listen((data) async {
       if (data is List) {
@@ -28,7 +31,10 @@ class FetchSongsMetadata {
         await songBox.put(song.path, song);
         final art = data[1];
         if (art != null) await thumbnailBox.put(song.path, art);
+        songScanned.value = '${++count}/${list.length}';
       } else {
+        refreshState.value = RefreshState.idle;
+        songScanned.value = null;
         _stop();
       }
     });

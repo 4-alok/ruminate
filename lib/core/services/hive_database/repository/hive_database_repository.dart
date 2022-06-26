@@ -14,6 +14,7 @@ abstract class HiveDatabaseRepository {
   Future<List<Artist>> get getArtistsList;
   Future<List<Genere>> get getGenresList;
   Future<List<Favourite>> get getFavSongsList;
+  Future<void> get closeDatabase;
 
   Future<Uint8List> getArt(String path);
 }

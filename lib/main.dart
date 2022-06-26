@@ -38,6 +38,7 @@ class Ruminate extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Ruminate',
           theme: ThemeData(
+              brightness: Brightness.dark,
               primarySwatch: Colors.blue,
               visualDensity: VisualDensity.adaptivePlatformDensity,
               pageTransitionsTheme: PageTransitionsTheme(builders: {

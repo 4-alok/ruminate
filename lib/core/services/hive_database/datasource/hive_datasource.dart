@@ -1,8 +1,11 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 
+import '../../../../global/widgets/refresh_widget.dart';
 import '../model/song.dart';
 import '../utils/fetch_metadata.dart';
 import '../utils/fetch_songs.dart';
@@ -23,7 +26,8 @@ class HiveDatasource implements HiveDatasourceRepository {
   }
 
   @override
-  Future<void> get updateDatabase async {
+  Future<void> updateDatabase(ValueNotifier<RefreshState> refreshState) async {
+    refreshState.value = RefreshState.scanning;
     // find all songs path [List<String>] from available storage [String]
     final songsPathFetched = await FetchSongsPath().fetch;
 
@@ -35,6 +39,7 @@ class HiveDatasource implements HiveDatasourceRepository {
       storedSong.where((element) => !songsPathFetched.contains(element)),
     );
 
+    refreshState.value = RefreshState.fetchingMetadata;
     // Add new songs to the database if data is not stored in database
     await _addNewSongs(
       songsPathFetched.where((element) => !storedSong.contains(element)),

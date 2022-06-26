@@ -1,16 +1,20 @@
 import 'dart:typed_data';
 
+import 'package:flutter/widgets.dart';
 import 'package:ruminate/core/services/hive_database/model/album.dart';
 import 'package:ruminate/core/services/hive_database/model/artist.dart';
 import 'package:ruminate/core/services/hive_database/model/favourite.dart';
 import 'package:ruminate/core/services/hive_database/model/genere.dart';
 import 'package:ruminate/core/services/hive_database/model/song.dart';
 
+import '../../../global/widgets/refresh_widget.dart';
 import 'datasource/hive_datasource.dart';
 import 'utils/sort_song.dart';
 import 'repository/hive_database_repository.dart';
 
 class HiveDatabase extends SortSongs implements HiveDatabaseRepository {
+  final songScanned = ValueNotifier<String?>(null);
+  final refreshState = ValueNotifier<RefreshState>(RefreshState.idle);
   final HiveDatasource datasource = HiveDatasource();
 
   @override
@@ -34,8 +38,17 @@ class HiveDatabase extends SortSongs implements HiveDatabaseRepository {
   Future<List<Favourite>> get getFavSongsList => throw UnimplementedError();
 
   @override
-  Future<List<Genere>> get getGenresList async => await getGeneres(getSongsList); 
+  Future<List<Genere>> get getGenresList async =>
+      await getGeneres(getSongsList);
 
   @override
-  Future<void> get updateDatabase async => await datasource.updateDatabase;
+  Future<void> get updateDatabase async =>
+      await datasource.updateDatabase(refreshState);
+
+  @override
+  Future<void> get closeDatabase async {
+    songScanned.dispose();
+    refreshState.dispose();
+    await datasource.closeDatabase;
+  }
 }

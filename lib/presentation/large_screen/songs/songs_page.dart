@@ -10,6 +10,7 @@ import '../../../core/services/hive_database/model/song.dart';
 import '../../../core/services/hive_database/hive_database_impl.dart';
 import '../../../global/widgets/base/action_icon.dart';
 import '../../../global/widgets/base/large_screen_base.dart';
+import '../../../global/widgets/refresh_widget.dart';
 
 class SongsPage extends StatelessWidget {
   const SongsPage({Key? key}) : super(key: key);
@@ -28,7 +29,8 @@ class SongsPage extends StatelessWidget {
       );
 
   Widget body() => ValueListenableBuilder<Box<Song>>(
-        valueListenable: locator<HiveDatabase>().datasource.songBox.listenable(),
+        valueListenable:
+            locator<HiveDatabase>().datasource.songBox.listenable(),
         builder: (context, box, child) {
           final songs = box.values.toList();
           songs.sort((b, a) => b.title.compareTo(a.title));
@@ -81,10 +83,11 @@ class SongsPage extends StatelessWidget {
       );
 
   List<Widget> get actions => [
-        ActionIcon(
-          onTap: () {},
-          child: const FaIcon(FontAwesomeIcons.gear),
-        ),
+        const RefreshWidget()
+        // ActionIcon(
+        //   onTap: () {},
+        //   child: const FaIcon(FontAwesomeIcons.gear),
+        // ),
       ];
 
   Widget secondaryToolBar(BuildContext context) => Row(
