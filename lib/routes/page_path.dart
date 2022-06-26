@@ -12,6 +12,7 @@ abstract class Routes {
   static const SETTINGS = _Path.SETTINGS;
   static const ALBUM_SONGS = _Path.ALBUM_SONGS;
   static const ARTIST_SONGS = _Path.ARTIST_SONGS;
+  static const GENERE_SONGS = _Path.GENERE_SONGS;
 }
 
 abstract class _Path {
@@ -22,4 +23,5 @@ abstract class _Path {
   static const String SETTINGS = '/settings';
   static const String ALBUM_SONGS = '/album_songs';
   static const String ARTIST_SONGS = '/artist_songs';
+  static const String GENERE_SONGS = '/genere_songs';
 }

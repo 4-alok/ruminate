@@ -41,19 +41,7 @@ class ArtistPage extends StatelessWidget {
                           child: Card(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)),
-                            child: ListTile(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              onTap: () => Navigator.pushNamed(
-                                context,
-                                Routes.ARTIST_SONGS,
-                                arguments: artist,
-                              ),
-                              title: Text(artist.artistName == ""
-                                  ? "Unknown Artist"
-                                  : artist.artistName),
-                              subtitle: Text(tileSubtitle(artist)),
-                            ),
+                            child: songTile(context, artist),
                           ),
                         ),
                       ),
@@ -61,6 +49,18 @@ class ArtistPage extends StatelessWidget {
                   },
                 ),
               ),
+      );
+
+  ListTile songTile(BuildContext context, Artist artist) => ListTile(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        onTap: () => Navigator.pushNamed(
+          context,
+          Routes.ARTIST_SONGS,
+          arguments: artist,
+        ),
+        title: Text(
+            artist.artistName == "" ? "Unknown Artist" : artist.artistName),
+        subtitle: Text(tileSubtitle(artist)),
       );
 
   Widget secondaryToolBar(BuildContext context) => Row(

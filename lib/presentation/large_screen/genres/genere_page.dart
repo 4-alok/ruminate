@@ -5,6 +5,7 @@ import 'package:ruminate/core/services/hive_database/model/genere.dart';
 
 import '../../../core/di/di.dart';
 import '../../../global/widgets/base/large_screen_base.dart';
+import '../../../routes/app_router.dart';
 
 class GenerePage extends StatelessWidget {
   const GenerePage({Key? key}) : super(key: key);
@@ -20,40 +21,46 @@ class GenerePage extends StatelessWidget {
         secondaryToolbar: secondaryToolBar(context),
         body: Padding(
           padding: const EdgeInsets.only(top: kToolbarHeight * 2 + 10),
-          child: FutureBuilder<List<Genere>>(
-            future: locator<HiveDatabase>().getGenresList,
-            builder: (context, snapshot) => !snapshot.hasData
-                ? const LinearProgressIndicator()
-                : AnimationLimiter(
-                    child: ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        final artist = snapshot.data![index];
-                        return AnimationConfiguration.staggeredList(
-                          position: index,
-                          child: SlideAnimation(
-                            child: FadeInAnimation(
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: ListTile(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  onTap: () {},
-                                  title: Text(artist.name == ""
-                                      ? "Unknown Genre"
-                                      : artist.name),
-                                  subtitle: Text(tileSubtitle(artist)),
-                                ),
+          child: body(),
+        ),
+      );
+
+  Widget body() => FutureBuilder<List<Genere>>(
+        future: locator<HiveDatabase>().getGenresList,
+        builder: (context, snapshot) => !snapshot.hasData
+            ? const LinearProgressIndicator()
+            : AnimationLimiter(
+                child: ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    final artist = snapshot.data![index];
+                    return AnimationConfiguration.staggeredList(
+                      position: index,
+                      child: SlideAnimation(
+                        child: FadeInAnimation(
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            child: ListTile(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              onTap: () => Navigator.pushNamed(
+                                context,
+                                Routes.GENERE_SONGS,
+                                arguments: artist,
                               ),
+                              title: Text(artist.name == ""
+                                  ? "Unknown Genre"
+                                  : artist.name),
+                              subtitle: Text(tileSubtitle(artist)),
                             ),
                           ),
-                        );
-                      },
-                    ),
-                  ),
-          ),
-        ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
       );
 
   Widget secondaryToolBar(BuildContext context) => Row(
