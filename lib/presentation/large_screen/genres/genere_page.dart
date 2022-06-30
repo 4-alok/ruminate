@@ -4,6 +4,7 @@ import 'package:ruminate/core/services/hive_database/hive_database_impl.dart';
 import 'package:ruminate/core/services/hive_database/model/genere.dart';
 
 import '../../../core/di/di.dart';
+import '../../../core/services/app_services/app_service.dart';
 import '../../../global/widgets/base/large_screen_base.dart';
 import '../../../routes/app_router.dart';
 
@@ -14,6 +15,8 @@ class GenerePage extends StatelessWidget {
     final count = artist.songs.length;
     return count == 1 ? "1 song" : "$count songs";
   }
+
+  AppService get appService => locator<AppService>();
 
   @override
   Widget build(BuildContext context) => LargeScreenBase(
@@ -91,6 +94,22 @@ class GenerePage extends StatelessWidget {
               ),
             ),
           ),
+          // TextButton(
+          //   onPressed: () => appService.panelController.show(),
+          //   child: const Text("Show"),
+          // ),
+          // TextButton(
+          //   onPressed: () => appService.panelController.open(),
+          //   child: const Text("Open"),
+          // ),
+          // TextButton(
+          //   onPressed: () => appService.panelController.hide(),
+          //   child: const Text("Hide"),
+          // ),
+          // TextButton(
+          //   onPressed: () => appService.panelController.close(),
+          //   child: const Text("Close"),
+          // ),
         ],
       );
 }

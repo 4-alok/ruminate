@@ -28,10 +28,12 @@ class FetchSongsMetadata {
     _receivePort!.listen((data) async {
       if (data is List) {
         final song = data[0] as Song;
-        await songBox.put(song.path, song);
-        final art = data[1];
-        if (art != null) await thumbnailBox.put(song.path, art);
-        songScanned.value = '${++count}/${list.length}';
+        if (song.duration != '00:00') {
+          await songBox.put(song.path, song);
+          final art = data[1];
+          if (art != null) await thumbnailBox.put(song.path, art);
+          songScanned.value = '${++count}/${list.length}';
+        }
       } else {
         refreshState.value = RefreshState.idle;
         songScanned.value = null;

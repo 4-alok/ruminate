@@ -50,7 +50,13 @@ dependencies:
   animations: ^2.0.3
   path_provider: ^2.0.11
   dart_vlc: ^0.2.1
-  flutter_staggered_animations: ^1.0.0
+  flutter_staggered_animations:
+    git:
+      url: https://github.com/Tkko/flutter_staggered_animations
+      ref: Flutter-3.0.0
+  sliding_up_panel: ^2.0.0+1
+  intl: ^0.17.0
+  marquee: ^2.2.3
 
 dev_dependencies:
   flutter_test:

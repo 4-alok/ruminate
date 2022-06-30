@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:ruminate/core/services/app_service.dart';
+import 'package:ruminate/core/services/app_services/app_service.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../../../core/di/di.dart';
 import 'app_drawer/app_drawer.dart';
+import 'components/ruminate_panel/ruminate_panel.dart';
 import 'components/windows_titlebar_box.dart';
 
 class LargeScreenBase extends StatefulWidget {
@@ -53,15 +55,27 @@ class _LargeScreenBaseState extends State<LargeScreenBase>
 
   @override
   Widget build(BuildContext context) => Material(
-        child: LayoutBuilder(
-          builder: (context, boxConstraints) {
-            appService.appDrawerState.value = (boxConstraints.maxWidth > 1200)
-                ? AppDrawerState.open
-                : AppDrawerState.close;
-            return Row(
-              children: [drawer(boxConstraints), body],
-            );
-          },
+        child: SlidingUpPanel(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          maxHeight: MediaQuery.of(context).size.height - 40,
+          minHeight: 70,
+          controller: appService.panelController,
+          collapsed: const RuminatePanel(),
+          panel: const Hero(
+              tag: 'panel',
+              child: Center(
+                child: Text("Panel"),
+              )),
+          body: LayoutBuilder(
+            builder: (context, boxConstraints) {
+              appService.appDrawerState.value = (boxConstraints.maxWidth > 1200)
+                  ? AppDrawerState.open
+                  : AppDrawerState.close;
+              return Row(
+                children: [drawer(boxConstraints), body],
+              );
+            },
+          ),
         ),
       );
 

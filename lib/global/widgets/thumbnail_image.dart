@@ -11,13 +11,15 @@ class ThumbnailImage extends StatefulWidget {
   final Uint8List? imageData;
   final int? hight;
   final int? width;
+  final bool disableHeroAnimation;
   const ThumbnailImage(
       {required this.path,
       this.duration = const Duration(milliseconds: 500),
       this.imageData,
       this.hight,
       this.width,
-      Key? key})
+      this.disableHeroAnimation = false,
+      Key? key,})
       : super(key: key);
 
   @override
@@ -48,40 +50,38 @@ class _ThumbnailImageState extends State<ThumbnailImage>
       locator<HiveDatabase>().getArt(path);
 
   @override
-  Widget build(BuildContext context) => Hero(
-        tag: widget.path,
-        child: Container(
-          color: Colors.grey,
-          child: widget.imageData != null
+  Widget build(BuildContext context) => widget.disableHeroAnimation
+      ? image()
+      : Hero(tag: widget.path, child: image());
+
+  Widget image() => widget.imageData != null
+      ? Image(
+          opacity: animation,
+          fit: BoxFit.cover,
+          image: ResizeImage.resizeIfNeeded(
+            widget.hight,
+            widget.width,
+            MemoryImage(widget.imageData!),
+          ),
+          errorBuilder: (_, __, ___) =>
+              Image.memory(locator<HiveDatabase>().datasource.imgThumbnail),
+        )
+      : FutureBuilder<Uint8List>(
+          future: locator<HiveDatabase>().getArt(widget.path),
+          builder: (context, snapshot) => snapshot.hasData
               ? Image(
                   opacity: animation,
                   fit: BoxFit.cover,
                   image: ResizeImage.resizeIfNeeded(
                     widget.hight,
                     widget.width,
-                    MemoryImage(widget.imageData!),
+                    MemoryImage(snapshot.data!),
                   ),
                   errorBuilder: (_, __, ___) => Image.memory(
                       locator<HiveDatabase>().datasource.imgThumbnail),
                 )
-              : FutureBuilder<Uint8List>(
-                  future: locator<HiveDatabase>().getArt(widget.path),
-                  builder: (context, snapshot) => snapshot.hasData
-                      ? Image(
-                          opacity: animation,
-                          fit: BoxFit.cover,
-                          image: ResizeImage.resizeIfNeeded(
-                            widget.hight,
-                            widget.width,
-                            MemoryImage(snapshot.data!),
-                          ),
-                          errorBuilder: (_, __, ___) => Image.memory(
-                              locator<HiveDatabase>().datasource.imgThumbnail),
-                        )
-                      : const SizedBox(),
-                ),
-        ),
-      );
+              : const SizedBox(),
+        );
 
   r() {}
 }

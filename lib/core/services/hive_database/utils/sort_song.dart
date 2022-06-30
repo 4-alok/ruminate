@@ -19,6 +19,9 @@ List<Genere> _getGeneres(List<Song> songs) {
     }
   }
   generes.sort((a, b) => a.name.compareTo(b.name));
+  for (Genere genere in generes) {
+    genere.songs.sort((a, b) => a.title.compareTo(b.title));
+  }
   return generes;
 }
 
@@ -38,6 +41,9 @@ List<Album> _getAlbum(List<Song> songs) {
       .toLowerCase()
       .trim()
       .compareTo(b.albumName.toLowerCase().trim()));
+  for (Album album in albums) {
+    album.songs.sort((a, b) => a.title.compareTo(b.title));
+  }
   return albums;
 }
 
@@ -57,6 +63,9 @@ List<Artist> _getArtist(List<Song> songs) {
       .toLowerCase()
       .trim()
       .compareTo(b.artistName.toLowerCase().trim()));
+  for (Artist artist in artists) {
+    artist.songs.sort((a, b) => a.title.compareTo(b.title));
+  }
   return artists;
 }
 

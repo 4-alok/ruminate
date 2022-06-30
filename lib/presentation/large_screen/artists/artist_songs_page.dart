@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ruminate/global/widgets/base/large_screen_base.dart';
 
 import '../../../core/di/di.dart';
-import '../../../core/services/app_service.dart';
+import '../../../core/services/app_services/app_service.dart';
 import '../../../core/services/hive_database/model/artist.dart';
 import '../../../global/widgets/thumbnail_image.dart';
 

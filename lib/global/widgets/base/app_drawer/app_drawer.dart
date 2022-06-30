@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ruminate/global/widgets/base/app_drawer/playlist.dart';
 
 import '../../../../core/di/di.dart';
-import '../../../../core/services/app_service.dart';
+import '../../../../core/services/app_services/app_service.dart';
 import 'library.dart';
 
 class AppDrawer extends StatelessWidget {
