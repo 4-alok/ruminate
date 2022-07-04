@@ -1,6 +1,7 @@
 import 'package:dart_vlc/dart_vlc.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ruminate/core/di/di.dart';
 import 'package:ruminate/core/extension/duration_to_string.dart';
 import 'package:ruminate/global/widgets/base/components/ruminate_panel/panel_utils.dart';
 
@@ -72,13 +73,26 @@ class MusicControllerWidget extends StatelessWidget with PanelUtils {
           ),
           InkWell(
             borderRadius: BorderRadius.circular(5),
-            onTap: () => audioService.audioService.pause(),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              child: FaIcon(
-                FontAwesomeIcons.pause,
-                size: 30,
-              ),
+            onTap: () => audioService.audioService.getPlayer.playback.isPlaying
+                ? audioService.audioService.pause()
+                : audioService.audioService.play(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              child: StreamBuilder<PlaybackState>(
+                  stream: audioService.audioService.getPlayer.playbackStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.data?.isPlaying ?? true) {
+                      return const FaIcon(
+                        FontAwesomeIcons.pause,
+                        size: 30,
+                      );
+                    } else {
+                      return const FaIcon(
+                        FontAwesomeIcons.play,
+                        size: 30,
+                      );
+                    }
+                  }),
             ),
           ),
           InkWell(
