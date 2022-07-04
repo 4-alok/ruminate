@@ -4,7 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ruminate/core/di/di.dart';
 import 'package:ruminate/core/services/app_services/app_service.dart';
 import 'package:ruminate/core/services/music_player_service/music_player_service.dart';
-import 'package:ruminate/global/widgets/thumbnail_image.dart';
+import 'package:ruminate/presentation/songs/song_tile.dart';
 
 import '../../../core/services/hive_database/hive_database_impl.dart';
 import '../../../core/services/hive_database/model/song.dart';
@@ -45,50 +45,33 @@ class _SongsPageState extends State<SongsPage> {
             padding: const EdgeInsets.only(top: kToolbarHeight * 2 + 10),
             child: Scrollbar(
               thumbVisibility: true,
-              child: AnimationLimiter(
-                child: songsList(box, songs),
-              ),
+              child: songListTable(context, songs),
+              // child: songsList(songs),
             ),
           );
         },
       );
 
-  Widget songsList(Box<Song> box, List<Song> songs) => ListView.builder(
-        physics: const BouncingScrollPhysics(),
-        itemCount: box.length,
-        itemBuilder: (context, index) => AnimationConfiguration.staggeredList(
-          position: index,
-          child: SlideAnimation(
-            verticalOffset: 44.0,
-            child: FadeInAnimation(
-              child: songTile(songs[index], index),
+  Widget songListTable(BuildContext context, List<Song> songs) =>
+      AnimationLimiter(
+        child: ListView.builder(
+          itemCount: songs.length,
+          itemBuilder: (context, index) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            child: AnimationConfiguration.staggeredList(
+              duration: const Duration(milliseconds: 200),
+              position: index,
+              child: SlideAnimation(
+                child: FadeInAnimation(
+                  child: SongTile(
+                    song: songs[index],
+                    index: index,
+                    onTap: () =>
+                        musicPlayerService.playSongs(songs, index: index),
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      );
-
-  Widget songTile(Song song, int index) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-        child: Card(
-          elevation: 1,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-          child: ListTile(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0)),
-            onTap: () => musicPlayerService.playSongs(songs, index: index),
-            leading: SizedBox(
-                height: 50,
-                width: 50,
-                child: ThumbnailImage(width: 50, path: song.path)),
-            title: Text((song.title),
-                maxLines: 1, overflow: TextOverflow.ellipsis),
-            subtitle: Text(
-              song.artist,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            trailing: Text(song.duration),
           ),
         ),
       );
