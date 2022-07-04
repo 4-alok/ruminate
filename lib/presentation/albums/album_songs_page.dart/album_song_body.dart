@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ruminate/core/di/di.dart';
 import 'package:ruminate/core/services/app_services/app_service.dart';
+import 'package:ruminate/core/services/music_player_service/music_player_service.dart';
 
 import '../../../../core/services/hive_database/model/album.dart';
 import '../../../../global/widgets/thumbnail_image.dart';
@@ -57,7 +58,8 @@ class AlbumSongsBody extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            onTap: () {},
+            onTap: () =>
+                locator<MusicPlayerService>().playAlbum(album, index: index),
             leading: CircleAvatar(
                 backgroundColor: Colors.transparent,
                 child: FaIcon(

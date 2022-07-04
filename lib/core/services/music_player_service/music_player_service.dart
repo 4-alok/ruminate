@@ -25,8 +25,11 @@ class MusicPlayerService implements MusicPlayerRepository {
   final isPlaying = ValueNotifier<bool>(false);
 
   @override
-  void playAlbum(Album album, [int index = 0]) =>
-      audioService.playPlaylist(album.songs, index);
+  void playAlbum(Album album, {bool shuffle = false, int index = 0}) {
+    final songs = List<Song>.from(album.songs);
+    shuffle ? songs.shuffle() : null;
+    audioService.playPlaylist(songs, index);
+  }
 
   @override
   void playAlbums(List<Album> albums) {
@@ -38,8 +41,11 @@ class MusicPlayerService implements MusicPlayerRepository {
   }
 
   @override
-  void playArtist(Artist artist, [int index = 0]) =>
-      audioService.playPlaylist(artist.songs, index);
+  void playArtist(Artist artist, {bool shuffle = false, int index = 0}) {
+    final songs = List<Song>.from(artist.songs);
+    shuffle ? songs.shuffle() : null;
+    audioService.playPlaylist(songs, index);
+  }
 
   @override
   void playArtists(List<Artist> artists, [int index = 0]) {
@@ -51,8 +57,11 @@ class MusicPlayerService implements MusicPlayerRepository {
   }
 
   @override
-  void playGenre(Genere genere, [int index = 0]) =>
-      audioService.playPlaylist(genere.songs, index);
+  void playGenre(Genere genere, {bool shuffle = false, int index = 0}) {
+    final songs = List<Song>.from(genere.songs);
+    shuffle ? songs.shuffle() : null;
+    audioService.playPlaylist(songs, index);
+  }
 
   @override
   void playGenres(List<Genere> generes, [int index = 0]) {
@@ -64,7 +73,7 @@ class MusicPlayerService implements MusicPlayerRepository {
   }
 
   @override
-  void playSongs(List<Song> songs, [int index = 0]) =>
+  void playSongs(List<Song> songs, {bool shuffle = false, int index = 0}) =>
       audioService.playPlaylist(songs, index);
 
   @disposeMethod

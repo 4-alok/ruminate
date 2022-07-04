@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../presentation/large_screen/albums/album_page.dart';
-import '../presentation/large_screen/albums/album_songs_page.dart/album_song_page.dart';
-import '../presentation/large_screen/artists/artist_page.dart';
-import '../presentation/large_screen/artists/artist_songs_page.dart';
-import '../presentation/large_screen/genres/genere_page.dart';
-import '../presentation/large_screen/genres/genere_songs_page.dart';
-import '../presentation/large_screen/songs/songs_page.dart';
+import '../presentation/albums/album_page.dart';
+import '../presentation/albums/album_songs_page.dart/album_song_page.dart';
+import '../presentation/artists/artist_page.dart';
+import '../presentation/artists/artist_songs_page.dart';
+import '../presentation/genres/genere_page.dart';
+import '../presentation/genres/genere_songs_page.dart';
+import '../presentation/songs/songs_page.dart';
 
 part 'page_path.dart';
 

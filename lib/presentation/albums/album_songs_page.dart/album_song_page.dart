@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:ruminate/core/di/di.dart';
+import 'package:ruminate/core/services/music_player_service/music_player_service.dart';
 
 import '../../../../core/services/hive_database/model/album.dart';
 import '../../../../global/widgets/base/large_screen_base.dart';
@@ -19,7 +21,7 @@ class AlbumSongsPage extends StatelessWidget {
         (ModalRoute.of(context)!.settings.arguments as List)[1] as Uint8List?;
     return LargeScreenBase(
       title: album.albumName,
-      secondaryToolbar: secondaryToolBar(context),
+      secondaryToolbar: secondaryToolBar(context, album),
       body: body(album, imgData),
     );
   }
@@ -39,7 +41,7 @@ class AlbumSongsPage extends StatelessWidget {
         }),
       );
 
-  Widget secondaryToolBar(BuildContext context) => Row(
+  Widget secondaryToolBar(BuildContext context, Album album) => Row(
         children: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -51,7 +53,7 @@ class AlbumSongsPage extends StatelessWidget {
           Hero(
             tag: 'play',
             child: TextButton(
-              onPressed: () {},
+              onPressed: () => locator<MusicPlayerService>().playAlbum(album),
               child: Row(
                 children: const [
                   Icon(Icons.play_arrow),
@@ -64,7 +66,8 @@ class AlbumSongsPage extends StatelessWidget {
           Hero(
             tag: 'shuffle',
             child: TextButton(
-              onPressed: () {},
+              onPressed: () =>
+                  locator<MusicPlayerService>().playAlbum(album, shuffle: true),
               child: Row(
                 children: const [
                   Icon(Icons.shuffle),

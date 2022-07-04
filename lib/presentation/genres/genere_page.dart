@@ -2,14 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:ruminate/core/services/hive_database/hive_database_impl.dart';
 import 'package:ruminate/core/services/hive_database/model/genere.dart';
+import 'package:ruminate/core/services/music_player_service/music_player_service.dart';
 
 import '../../../core/di/di.dart';
 import '../../../core/services/app_services/app_service.dart';
 import '../../../global/widgets/base/large_screen_base.dart';
 import '../../../routes/app_router.dart';
 
-class GenerePage extends StatelessWidget {
+class GenerePage extends StatefulWidget {
   const GenerePage({Key? key}) : super(key: key);
+
+  @override
+  State<GenerePage> createState() => _GenerePageState();
+}
+
+class _GenerePageState extends State<GenerePage> {
+  List<Genere> _genereList = [];
 
   String tileSubtitle(Genere artist) {
     final count = artist.songs.length;
@@ -24,46 +32,51 @@ class GenerePage extends StatelessWidget {
         secondaryToolbar: secondaryToolBar(context),
         body: Padding(
           padding: const EdgeInsets.only(top: kToolbarHeight * 2 + 10),
-          child: body(),
+          child: body,
         ),
       );
 
-  Widget body() => FutureBuilder<List<Genere>>(
+  Widget get body => FutureBuilder<List<Genere>>(
         future: locator<HiveDatabase>().getGenresList,
-        builder: (context, snapshot) => !snapshot.hasData
-            ? const LinearProgressIndicator()
-            : AnimationLimiter(
-                child: ListView.builder(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    final artist = snapshot.data![index];
-                    return AnimationConfiguration.staggeredList(
-                      position: index,
-                      child: SlideAnimation(
-                        child: FadeInAnimation(
-                          child: Card(
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const LinearProgressIndicator();
+          } else {
+            _genereList = snapshot.data ?? [];
+            return AnimationLimiter(
+              child: ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  final artist = snapshot.data![index];
+                  return AnimationConfiguration.staggeredList(
+                    position: index,
+                    child: SlideAnimation(
+                      child: FadeInAnimation(
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          child: ListTile(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)),
-                            child: ListTile(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              onTap: () => Navigator.pushNamed(
-                                context,
-                                Routes.GENERE_SONGS,
-                                arguments: artist,
-                              ),
-                              title: Text(artist.name == ""
-                                  ? "Unknown Genre"
-                                  : artist.name),
-                              subtitle: Text(tileSubtitle(artist)),
+                            onTap: () => Navigator.pushNamed(
+                              context,
+                              Routes.GENERE_SONGS,
+                              arguments: artist,
                             ),
+                            title: Text(artist.name == ""
+                                ? "Unknown Genre"
+                                : artist.name),
+                            subtitle: Text(tileSubtitle(artist)),
                           ),
                         ),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
+            );
+          }
+        },
       );
 
   Widget secondaryToolBar(BuildContext context) => Row(
@@ -71,7 +84,8 @@ class GenerePage extends StatelessWidget {
           Hero(
             tag: "genere_play",
             child: TextButton(
-              onPressed: () {},
+              onPressed: () =>
+                  locator<MusicPlayerService>().playGenres(_genereList),
               child: Row(
                 children: const [
                   Icon(Icons.play_arrow),
@@ -81,19 +95,19 @@ class GenerePage extends StatelessWidget {
               ),
             ),
           ),
-          Hero(
-            tag: 'genere_shuffle',
-            child: TextButton(
-              onPressed: () {},
-              child: Row(
-                children: const [
-                  Icon(Icons.shuffle),
-                  SizedBox(width: 5),
-                  Text("Shuffle"),
-                ],
-              ),
-            ),
-          ),
+          // Hero(
+          //   tag: 'genere_shuffle',
+          //   child: TextButton(
+          //     onPressed: () {},
+          //     child: Row(
+          //       children: const [
+          //         Icon(Icons.shuffle),
+          //         SizedBox(width: 5),
+          //         Text("Shuffle"),
+          //       ],
+          //     ),
+          //   ),
+          // ),
           // TextButton(
           //   onPressed: () => appService.panelController.show(),
           //   child: const Text("Show"),

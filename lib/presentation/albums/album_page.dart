@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:ruminate/core/di/di.dart';
+import 'package:ruminate/core/services/music_player_service/music_player_service.dart';
 
 import '../../../core/services/hive_database/model/album.dart';
 import '../../../core/services/hive_database/utils/sort_song.dart';
@@ -7,8 +9,15 @@ import '../../../global/widgets/base/large_screen_base.dart';
 import '../../../global/widgets/thumbnail_image.dart';
 import '../../../routes/app_router.dart';
 
-class AlbumPage extends StatelessWidget {
+class AlbumPage extends StatefulWidget {
   const AlbumPage({Key? key}) : super(key: key);
+
+  @override
+  State<AlbumPage> createState() => _AlbumPageState();
+}
+
+class _AlbumPageState extends State<AlbumPage> {
+  List<Album> albums = [];
 
   @override
   Widget build(BuildContext context) => LargeScreenBase(
@@ -28,7 +37,7 @@ class AlbumPage extends StatelessWidget {
           Hero(
             tag: "play",
             child: TextButton(
-              onPressed: () {},
+              onPressed: () => locator<MusicPlayerService>().playAlbums(albums),
               child: Row(
                 children: const [
                   Icon(Icons.play_arrow),
@@ -56,29 +65,34 @@ class AlbumPage extends StatelessWidget {
 
   Widget gridView(int crossAxisCount) => FutureBuilder<List<Album>>(
         future: SortSongsO.getAlbum(),
-        builder: (context, snapshot) => !snapshot.hasData
-            ? const LinearProgressIndicator()
-            : AnimationLimiter(
-                child: GridView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: snapshot.data!.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: crossAxisCount,
-                    childAspectRatio: 230 / 300,
-                  ),
-                  itemBuilder: (context, index) =>
-                      AnimationConfiguration.staggeredList(
-                    position: index,
-                    duration: const Duration(milliseconds: 1),
-                    child: SlideAnimation(
-                        duration: const Duration(milliseconds: 300),
-                        verticalOffset: 40,
-                        child: FadeInAnimation(
-                            duration: const Duration(milliseconds: 300),
-                            child: albumTile(context, snapshot.data![index]))),
-                  ),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const LinearProgressIndicator();
+          } else {
+            albums = snapshot.data ?? [];
+            return AnimationLimiter(
+              child: GridView.builder(
+                physics: const BouncingScrollPhysics(),
+                itemCount: snapshot.data!.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  childAspectRatio: 230 / 300,
+                ),
+                itemBuilder: (context, index) =>
+                    AnimationConfiguration.staggeredList(
+                  position: index,
+                  duration: const Duration(milliseconds: 1),
+                  child: SlideAnimation(
+                      duration: const Duration(milliseconds: 300),
+                      verticalOffset: 40,
+                      child: FadeInAnimation(
+                          duration: const Duration(milliseconds: 300),
+                          child: albumTile(context, snapshot.data![index]))),
                 ),
               ),
+            );
+          }
+        },
       );
 
   Widget albumTile(BuildContext context, Album album) => Padding(

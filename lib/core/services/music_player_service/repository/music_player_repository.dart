@@ -5,11 +5,11 @@ import '../../hive_database/model/genere.dart';
 import '../../hive_database/model/song.dart';
 
 abstract class MusicPlayerRepository {
-  void playSongs(List<Song> songs ,[int index = 0]);
+  void playSongs(List<Song> songs, {required bool shuffle, int index = 0});
   void playAlbums(List<Album> albums);
-  void playAlbum(Album album,[int index = 0]);
+  void playAlbum(Album album, {bool shuffle = false, int index = 0});
   void playArtists(List<Artist> songs);
-  void playArtist(Artist artist,[int index = 0]);
+  void playArtist(Artist artist, {required bool shuffle, int index = 0});
   void playGenres(List<Genere> songs);
-  void playGenre(Genere genre,[int index = 0]);
+  void playGenre(Genere genre, {required bool shuffle, int index = 0});
 }

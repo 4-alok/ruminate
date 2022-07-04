@@ -56,7 +56,6 @@ dependencies:
       ref: Flutter-3.0.0
   sliding_up_panel: ^2.0.0+1
   intl: ^0.17.0
-  marquee: ^2.2.3
 
 dev_dependencies:
   flutter_test:

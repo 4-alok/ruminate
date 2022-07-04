@@ -76,7 +76,7 @@ class _SongsPageState extends State<SongsPage> {
           child: ListTile(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0)),
-            onTap: () => musicPlayerService.playSongs(songs, index),
+            onTap: () => musicPlayerService.playSongs(songs, index: index),
             leading: SizedBox(
                 height: 50,
                 width: 50,
@@ -108,7 +108,7 @@ class _SongsPageState extends State<SongsPage> {
             ),
           ),
           TextButton(
-            onPressed: () {},
+            onPressed: () => musicPlayerService.playSongs(songs, shuffle: true),
             child: Row(
               children: const [
                 Icon(Icons.shuffle),

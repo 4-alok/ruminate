@@ -1,26 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:ruminate/global/widgets/base/large_screen_base.dart';
+import 'package:ruminate/core/services/hive_database/model/genere.dart';
 
-import '../../../core/di/di.dart';
-import '../../../core/services/app_services/app_service.dart';
-import '../../../core/services/hive_database/model/artist.dart';
+import '../../../global/widgets/base/large_screen_base.dart';
 import '../../../global/widgets/thumbnail_image.dart';
+import '../../core/di/di.dart';
+import '../../core/services/music_player_service/music_player_service.dart';
 
-class ArtistSongsPage extends StatelessWidget {
-  const ArtistSongsPage({Key? key}) : super(key: key);
+class GenereSongsPage extends StatefulWidget {
+  const GenereSongsPage({Key? key}) : super(key: key);
 
-  double get drawerWidth => locator<AppService>().isAppDrawerOpen ? 270 : 50;
+  @override
+  State<GenereSongsPage> createState() => _GenereSongsPageState();
+}
+
+class _GenereSongsPageState extends State<GenereSongsPage> {
+  Genere getGenere(BuildContext context) =>
+      ModalRoute.of(context)!.settings.arguments as Genere;
 
   @override
   Widget build(BuildContext context) {
-    final artist = ModalRoute.of(context)!.settings.arguments as Artist;
+    final genere = getGenere(context);
+
     return LargeScreenBase(
-        title: artist.artistName,
+        title: genere.name,
         secondaryToolbar: secondaryToolBar(context),
         body: Padding(
           padding: const EdgeInsets.only(top: kToolbarHeight * 2),
           child: ListView.builder(
-            itemCount: artist.songs.length,
+            itemCount: genere.songs.length,
             itemBuilder: (context, index) => Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -29,15 +36,16 @@ class ArtistSongsPage extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                onTap: () {},
+                onTap: () => locator<MusicPlayerService>()
+                    .playGenre(genere, index: index),
                 leading: SizedBox(
                     height: 50,
                     width: 50,
                     child: ThumbnailImage(
-                        width: 50, path: artist.songs[index].path)),
-                title: Text(artist.songs[index].title),
-                subtitle: Text(artist.songs[index].album),
-                trailing: Text(artist.songs[index].duration),
+                        width: 50, path: genere.songs[index].path)),
+                title: Text(genere.songs[index].title),
+                subtitle: Text(genere.songs[index].artist),
+                trailing: Text(genere.songs[index].duration),
               ),
             ),
           ),
@@ -54,9 +62,10 @@ class ArtistSongsPage extends StatelessWidget {
             ),
           ),
           Hero(
-            tag: "artist_play",
+            tag: "genere_play",
             child: TextButton(
-              onPressed: () {},
+              onPressed: () =>
+                  locator<MusicPlayerService>().playGenre(getGenere(context)),
               child: Row(
                 children: const [
                   Icon(Icons.play_arrow),
@@ -67,9 +76,10 @@ class ArtistSongsPage extends StatelessWidget {
             ),
           ),
           Hero(
-            tag: 'artist_shuffle',
+            tag: 'genere_shuffle',
             child: TextButton(
-              onPressed: () {},
+              onPressed: () => locator<MusicPlayerService>()
+                  .playGenre(getGenere(context), shuffle: true),
               child: Row(
                 children: const [
                   Icon(Icons.shuffle),
