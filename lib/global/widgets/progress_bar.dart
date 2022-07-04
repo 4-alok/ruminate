@@ -58,6 +58,9 @@ class _MusicProgressBarState extends State<MusicProgressBar>
     seekController.value = _touchPoint.dx / box.size.width;
   }
 
+  Duration getDuration(double progress) => Duration(
+      milliseconds: (widget.duration.inMilliseconds * progress).toInt());
+
   double get progress => widget.position.inMilliseconds == 0
       ? 0.0
       : widget.position.inMilliseconds / widget.duration.inMilliseconds;
@@ -72,6 +75,7 @@ class _MusicProgressBarState extends State<MusicProgressBar>
           hoverAnimationController.value == hoverAnimationController.upperBound
               ? hoverAnimationController.reverse()
               : null;
+          isInBox ? widget.seekTo(getDuration(seekController.value)) : null;
         },
         child: MouseRegion(
           onEnter: (_) {

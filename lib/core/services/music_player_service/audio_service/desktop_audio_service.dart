@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:dart_vlc/dart_vlc.dart';
+import 'package:ruminate/core/di/di.dart';
+import 'package:ruminate/core/services/app_services/app_service.dart';
 import 'package:ruminate/core/services/music_player_service/audio_service/audio_service.dart';
 
 import '../../hive_database/model/song.dart';
@@ -15,6 +17,11 @@ class DesktopAudioService extends AudioService {
       id: ID,
       commandlineArguments: ['--no-video'],
     );
+    player.playbackStream.listen((playbackStream) {
+      if (playbackStream.isPlaying) {
+        locator<AppService>().panelController.show();
+      }
+    });
   }
 
   @override

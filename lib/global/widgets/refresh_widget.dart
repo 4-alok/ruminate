@@ -23,7 +23,6 @@ class RefreshWidget extends StatelessWidget {
               case RefreshState.scanning:
                 return scanningWidget;
               case RefreshState.fetchingMetadata:
-                print("Here");
                 return fetchingWidget;
             }
           },

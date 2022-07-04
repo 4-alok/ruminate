@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ruminate/core/services/app_services/app_service.dart';
+import 'package:ruminate/core/services/music_player_service/music_player_service.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../../../core/di/di.dart';
@@ -68,6 +69,13 @@ class _LargeScreenBaseState extends State<LargeScreenBase>
               )),
           body: LayoutBuilder(
             builder: (context, boxConstraints) {
+              if (!locator<MusicPlayerService>()
+                  .audioService
+                  .getPlayer
+                  .playback
+                  .isPlaying) {
+                appService.panelController.hide();
+              }
               appService.appDrawerState.value = (boxConstraints.maxWidth > 1200)
                   ? AppDrawerState.open
                   : AppDrawerState.close;

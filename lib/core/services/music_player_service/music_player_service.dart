@@ -22,8 +22,6 @@ class MusicPlayerService implements MusicPlayerRepository {
     }
   }
 
-  final isPlaying = ValueNotifier<bool>(false);
-
   @override
   void playAlbum(Album album, {bool shuffle = false, int index = 0}) {
     final songs = List<Song>.from(album.songs);
@@ -79,6 +77,5 @@ class MusicPlayerService implements MusicPlayerRepository {
   @disposeMethod
   void dispose() async {
     audioService.dispose();
-    isPlaying.dispose();
   }
 }

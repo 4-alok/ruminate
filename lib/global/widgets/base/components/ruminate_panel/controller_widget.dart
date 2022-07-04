@@ -34,7 +34,8 @@ class MusicControllerWidget extends StatelessWidget with PanelUtils {
                         child: MusicProgressBar(
                           position: snapshot.data?.position ?? Duration.zero,
                           duration: snapshot.data?.duration ?? Duration.zero,
-                          seekTo: (_) {},
+                          seekTo: (duration) =>
+                              audioService.audioService.seek(duration),
                         ),
                       ),
                       const SizedBox(width: 5),
