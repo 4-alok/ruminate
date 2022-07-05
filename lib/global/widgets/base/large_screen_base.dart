@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ruminate/core/services/app_services/app_service.dart';
 import 'package:ruminate/core/services/music_player_service/music_player_service.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../../../core/di/di.dart';
 import 'app_drawer/app_drawer.dart';
 import 'components/ruminate_panel/ruminate_panel.dart';
+import 'components/sliding_up_panel.dart';
 import 'components/windows_titlebar_box.dart';
 
 class LargeScreenBase extends StatefulWidget {
@@ -62,6 +62,9 @@ class _LargeScreenBaseState extends State<LargeScreenBase>
           minHeight: 70,
           controller: appService.panelController,
           collapsed: const RuminatePanel(),
+          slidePosition: (value) => (value >= 0.0 && value <= 1.0)
+              ? appService.slidingPosition.value = value
+              : null,
           panel: const Hero(
               tag: 'panel',
               child: Center(
@@ -97,7 +100,10 @@ class _LargeScreenBaseState extends State<LargeScreenBase>
         ),
         child: Stack(
           children: [
-            widget.body,
+            NotificationListener(
+              onNotification: (_) => true,
+              child: widget.body,
+            ),
             WindowsTitlebarBox(
               title: widget.title,
               actions: widget.actions,

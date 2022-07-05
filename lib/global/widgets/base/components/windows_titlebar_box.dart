@@ -1,6 +1,8 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:ruminate/core/di/di.dart';
 
+import '../../../../core/services/app_services/app_service.dart';
 import '../app_drawer/window_button.dart';
 
 class WindowsTitlebarBox extends StatelessWidget {
@@ -67,11 +69,17 @@ class WindowsTitlebarBox extends StatelessWidget {
               ),
             ),
             Positioned(
-              bottom: 0,
+              top: 12,
               left: 0,
-              child: Text(
-                title ?? "",
-                style: Theme.of(context).textTheme.headline4,
+              child: AnimatedBuilder(
+                animation: locator<AppService>().slidingPosition,
+                builder: (context, child) => Text(
+                  title ?? "",
+                  style: Theme.of(context).textTheme.headline4!.copyWith(
+                        fontSize: 35 -
+                            locator<AppService>().slidingPosition.value * 15,
+                      ),
+                ),
               ),
             ),
           ],

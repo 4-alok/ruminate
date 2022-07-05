@@ -54,14 +54,17 @@ class _MarqueeTextState extends State<MarqueeText> {
   }
 
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        controller: scrollController,
-        child: Text(
-          maxLines: 1,
-          overflow: TextOverflow.clip,
-          widget.text,
-          style: widget.style,
+  Widget build(BuildContext context) => NotificationListener(
+    onNotification: (_) => true,
+    child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          controller: scrollController,
+          child: Text(
+            maxLines: 1,
+            overflow: TextOverflow.clip,
+            widget.text,
+            style: widget.style,
+          ),
         ),
-      );
+  );
 }

@@ -27,14 +27,11 @@ class RuminatePanel extends StatelessWidget with PanelUtils {
   Widget shortPanel(BuildContext context) => Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          Container(
-              color: Colors.green,
-              child: Container(
-                  color: Colors.red,
-                  child: CurrentSongWidget(
-                    width: MediaQuery.of(context).size.width * .6,
-                  ))),
-          // MusicControllerWidget(),
+          CurrentSongWidget(
+            width: MediaQuery.of(context).size.width * .6,
+          ),
+          const Spacer(),
+          const MiniController(),
         ],
       );
 

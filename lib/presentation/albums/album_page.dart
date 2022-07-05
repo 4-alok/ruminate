@@ -47,19 +47,19 @@ class _AlbumPageState extends State<AlbumPage> {
               ),
             ),
           ),
-          Hero(
-            tag: 'shuffle',
-            child: TextButton(
-              onPressed: () {},
-              child: Row(
-                children: const [
-                  Icon(Icons.shuffle),
-                  SizedBox(width: 5),
-                  Text("Shuffle"),
-                ],
-              ),
-            ),
-          ),
+          // Hero(
+          //   tag: 'shuffle',
+          //   child: TextButton(
+          //     onPressed: () {},
+          //     child: Row(
+          //       children: const [
+          //         Icon(Icons.shuffle),
+          //         SizedBox(width: 5),
+          //         Text("Shuffle"),
+          //       ],
+          //     ),
+          //   ),
+          // ),
         ],
       );
 

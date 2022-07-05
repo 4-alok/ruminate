@@ -46,17 +46,24 @@ class MusicControllerWidget extends StatelessWidget with PanelUtils {
                 ),
               ),
             ),
-            Positioned(
+            const Positioned(
               top: 5,
               left: 0,
               right: 0,
-              child: Center(child: miniController),
+              child: Center(
+                child: MiniController(),
+              ),
             ),
           ],
         ),
       );
+}
 
-  Widget get miniController => Row(
+class MiniController extends StatelessWidget with PanelUtils {
+  const MiniController({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           InkWell(
