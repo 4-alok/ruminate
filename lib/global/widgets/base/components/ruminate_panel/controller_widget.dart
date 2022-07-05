@@ -1,7 +1,6 @@
 import 'package:dart_vlc/dart_vlc.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:ruminate/core/di/di.dart';
 import 'package:ruminate/core/extension/duration_to_string.dart';
 import 'package:ruminate/global/widgets/base/components/ruminate_panel/panel_utils.dart';
 

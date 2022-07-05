@@ -70,8 +70,10 @@ class MusicPlayerService implements MusicPlayerRepository {
   }
 
   @override
-  void playSongs(List<Song> songs, {bool shuffle = false, int index = 0}) =>
-      audioService.playPlaylist(songs, index);
+  void playSongs(List<Song> songs, {bool shuffle = false, int index = 0}) {
+    shuffle ? songs.shuffle() : null;
+    audioService.playPlaylist(songs, index);
+  }
 
   @disposeMethod
   void dispose() async {
